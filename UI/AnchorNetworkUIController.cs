@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.Networking.Match;
-using UnityEngine.Networking.Types;
+//using UnityEngine.Networking;
+//using UnityEngine.Networking.Match;
+//using UnityEngine.Networking.Types;
 using UnityEngine.UI;
+
+using Photon.Pun;
+using Photon.Realtime;
 
 public class AnchorNetworkUIController : MonoBehaviour
 {
@@ -13,7 +16,9 @@ public class AnchorNetworkUIController : MonoBehaviour
     public Text SnackbarText; // 스낵바 문구
     public GameObject CurrentRoomLabel; // 현재 룸 보여줄 라벨
     public GameObject temp; // 하키 경기장 컨트롤러 자리
-    public GameObject RoomListPanel; // 입장 가능 룸 보여줄 패널
+    //public GameObject RoomListPanel; // 입장 가능 룸 보여줄 패널
+    public GameObject Room; // 룸 버튼
+    public Transform GridTr; // 룸 그리드
     public Text NoPreviousRoomsText; // 룸이 없다는 메세지
     public GameObject JoinRoomListRowPrefab; // 룸리스트 띄울 한줄짜리 프리팹
     #endregion
@@ -28,6 +33,7 @@ public class AnchorNetworkUIController : MonoBehaviour
     #region Touch Event
     private void Awake()
     {
+        /*
         //방 참가 버튼 초기화
         for(int i = 0; i < PageSize; i++)
         {
@@ -39,6 +45,7 @@ public class AnchorNetworkUIController : MonoBehaviour
         }
 
         NetworkManager = GetComponent<AnchorNetworkManager>();
+        
         NetworkManager.StartMatchMaker();
         NetworkManager.matchMaker.ListMatches(
             startPageNumber: 0,
@@ -49,14 +56,12 @@ public class AnchorNetworkUIController : MonoBehaviour
             requestDomain: 0,
             callback: _OnMatchList
             ) ;
+         
         _ChangeLobbyUIVisibility(true);
-    }
-
-    public void OnCreateRoomClicked()
-    {
-        NetworkManager.matchMaker.CreateMatch(NetworkManager.matchName, NetworkManager.matchSize, true, string.Empty, string.Empty, string.Empty, 0, 0, _OnMatchCreate);
+        */
     }
     
+    /*
     public void OnRefreshRoomListClicked()
     {
         NetworkManager.matchMaker.ListMatches(
@@ -105,10 +110,12 @@ public class AnchorNetworkUIController : MonoBehaviour
             SnackbarText.text = "Could Anchor could not be resolve. Will attempt again." + response;
         }
     }
+    */   
     #endregion
 
 
     #region Network Event
+    /*
 #pragma warning disable 618
     private void _OnMatchCreate(bool success, string extendedInfo, MatchInfo matchInfo)
 #pragma warning restore 618
@@ -213,10 +220,10 @@ public class AnchorNetworkUIController : MonoBehaviour
     {
         return (System.Convert.ToInt64(networkId.ToString()) % 10000).ToString();
     }
+    */
+
     #endregion
 
-    public void ShowDebugMessage(string debugMessage)
-    {
-        SnackbarText.text = debugMessage;
-    }
+    
+    
 }

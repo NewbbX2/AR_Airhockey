@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 //using UnityEngine.Networking;
 using Photon.Pun;
 using Photon.Realtime;
@@ -69,6 +70,7 @@ public class AnchorNetworkManager : MonoBehaviourPunCallbacks
 
         //포톤 서버 옵션
         PhotonNetwork.GameVersion = GameVersion;
+        PhotonNetwork.AutomaticallySyncScene = true;
     }
     #endregion
 
@@ -76,6 +78,17 @@ public class AnchorNetworkManager : MonoBehaviourPunCallbacks
     {
         //포톤 연결
         PhotonNetwork.ConnectUsingSettings();
+    }
+
+    private void Update()
+    {
+        //앱 생명주기
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+        var _SleepTimeout = SleepTimeout.SystemSetting;
+        Screen.sleepTimeout = _SleepTimeout;        
     }
 
     #region 포톤 콜백
@@ -100,6 +113,12 @@ public class AnchorNetworkManager : MonoBehaviourPunCallbacks
     public override void OnCreatedRoom()
     {
         Debug.Log(PhotonNetwork.CurrentRoom);
+        SceneManager.LoadScene(1);
+    }
+
+    public override void OnLeftRoom()
+    {
+        Debug.Log("Left room");
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
@@ -141,6 +160,7 @@ public class AnchorNetworkManager : MonoBehaviourPunCallbacks
     public void OnClickRoom(string roomName)
     {
         PhotonNetwork.JoinRoom(roomName, null);
+        ShowDebugMessage("Enter to room...");
     }
 
     public void ShowDebugMessage(string debugMessage)

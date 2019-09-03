@@ -13,7 +13,7 @@ using GoogleARCore.CrossPlatform;
 using Input = GoogleARCore.InstantPreviewInput;
 #endif
 
-public class CloudAnchorController : MonoBehaviourPunCallbacks
+public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
 {
     public enum ApplicationMode
     {
@@ -162,7 +162,7 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks
     }
 
     //앵커 cloud id를 resolve하고 프리팹을 그위에 instantiate
-    private void ResolveAnchorFromId(string cloudAnchorId)
+    public void ResolveAnchorFromId(string cloudAnchorId)
     {
         OnAnchorInstantiated(false);
 
@@ -248,7 +248,7 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks
                 return;
             }
             Debug.Log(string.Format("Cloud Anchor {0} is created and saved", result.Anchor.CloudId));
-            SetCloudAnchorId(result.Anchor.CloudId);
+            CloudAnchor_Id = result.Anchor.CloudId;
             OnAnchorHostinged(true, result.Response.ToString());
         }
         );
@@ -341,24 +341,25 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks
     {
     }
     #endregion
-
-    #region Cloud ID
-    public void SetCloudAnchorId(string cloudAnchorId)
-    {
-        CloudAnchor_Id = cloudAnchorId;
-    }
-
-    public string GetCloudAnchorId()
-    {
-        return CloudAnchor_Id;
-    }
-    
-    
-
-    #endregion
-
+       
     public void ShowDebugMessage(string debugMessage)
     {
         SnackbarText.text = debugMessage;
     }
+
+
+    #region Cloud ID
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(CloudAnchor_Id);
+        }
+        else
+        {
+            CloudAnchor_Id = (string)stream.ReceiveNext();
+        }
+    }
+    #endregion
 }

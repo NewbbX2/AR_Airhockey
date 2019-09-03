@@ -121,6 +121,12 @@ public class AnchorNetworkManager : MonoBehaviourPunCallbacks
         Debug.Log("Left room");
     }
 
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        ShowDebugMessage("Master Client leave room. Exit room in 5 sec...");
+        Invoke("ExitRoom", 5.0f);
+    }
+
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
         Debug.Log("Room list is updated");
@@ -161,6 +167,12 @@ public class AnchorNetworkManager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.JoinRoom(roomName, null);
         ShowDebugMessage("Enter to room...");
+    }
+
+    public void ExitRoom()
+    {
+        SnackbarText.text = string.Empty;
+        PhotonNetwork.LeaveRoom();
     }
 
     public void ShowDebugMessage(string debugMessage)

@@ -6,6 +6,7 @@ using Photon.Pun;
 using Photon.Realtime;
 
 using GoogleARCore;
+using GoogleARCore.CrossPlatform;
 
 //에디터 실행시 인스턴트 프리뷰 실행 시키기
 #if UNITY_EDITOR
@@ -28,6 +29,7 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks
     public GameObject ARCoreRoot;
     public Text RoomLabel;
     public ARCoreWorldOrigin WorldOrigin;
+    private string CloudAnchor_Id = string.Empty;
     #endregion
 
     #region 내부 변수
@@ -38,6 +40,8 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks
     private Component WorldOriginAnchor = null; // 앵커
     private Pose? LastHitPos = null; // AR hit test에서 마지막으로 hit한 곳
     private ApplicationMode CurrentMode = ApplicationMode.Ready;
+    private bool ShouldResolve = false;
+
     #endregion
 
     private void Awake()
@@ -77,7 +81,7 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks
             return;
         }
 
-        //resolving 상탱이나 앵커가 없으면 종료
+        //resolving 상태이나 앵커가 없으면 종료
         if(CurrentMode == ApplicationMode.Resolving && !IsOriginPlaced)
         {
             return;
@@ -102,6 +106,17 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks
         if(LastHitPos != null)
         {
             // 터치한 곳에 AR오브젝트가 있다면 이곳이 실행됨
+        }
+
+        //앵커 resolve
+        if (ShouldResolve)
+        {
+            SnackbarText.text = string.Empty;
+            ResolveAnchorFromId(CloudAnchor_Id);
+        }
+        else if(!PhotonNetwork.IsMasterClient)
+        {
+            ShowDebugMessage("Plase wait Player setting table...");
         }
     }
 
@@ -146,6 +161,40 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks
         ARCoreRoot.SetActive(true);
     }
 
+    //앵커 cloud id를 resolve하고 프리팹을 그위에 instantiate
+    private void ResolveAnchorFromId(string cloudAnchorId)
+    {
+        OnAnchorInstantiated(false);
+
+        // 디바이스가 트래킹하고 있지 않으면 앵커 resolve를 기다리자
+        if(Session.Status != SessionStatus.Tracking)
+        {
+            return;
+        }
+
+        ShouldResolve = false;
+
+        XPSession.ResolveCloudAnchor(cloudAnchorId).ThenAction(
+            (System.Action<CloudAnchorResult>)(result =>
+            {
+                if(result.Response != CloudServiceResponse.Success)
+                {
+                    Debug.LogError(string.Format(
+                        "Client could not resolve Cloud Anchor {0}: {1}",
+                        cloudAnchorId, result.Response)
+                        );
+                    OnAnchorResolved(false, result.Response.ToString());
+                    ShouldResolve = true;
+                    return;
+                }
+                Debug.Log(string.Format("Client successfully resolved Cloud Anchor {0}", cloudAnchorId));
+                OnAnchorResolved(true, result.Response.ToString());
+                OnResolve(result.Anchor.transform);
+            }
+            ));
+
+    }
+
     public void OnAnchorInstantiated(bool isHost)
     {
         //이미 앵커가 배치됬으면 실행 안함
@@ -179,6 +228,30 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks
         {
             ShowDebugMessage("Cloud Anchor successfully hosted!");
         }
+    }
+
+    public void OnResolve(Transform anchorTransform)
+    {
+        SetWorldOrigin(anchorTransform);
+    }
+
+    public void HostLastPlacedAnchor(Component lastPlacedAnchor)
+    {
+        var anchor = (Anchor)lastPlacedAnchor;
+
+        XPSession.CreateCloudAnchor(anchor).ThenAction(result =>
+        {
+            if(result.Response != CloudServiceResponse.Success)
+            {
+                Debug.Log(string.Format("Host Cloud Anchor is failed: {0}", result.Response));
+                OnAnchorHostinged(false, result.Response.ToString());
+                return;
+            }
+            Debug.Log(string.Format("Cloud Anchor {0} is created and saved", result.Anchor.CloudId));
+            SetCloudAnchorId(result.Anchor.CloudId);
+            OnAnchorHostinged(true, result.Response.ToString());
+        }
+        );
     }
 
     #endregion
@@ -243,6 +316,7 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks
     #region 네트워크
     private void OnEnterRoom()
     {
+        //모드 지정
         if(CurrentMode == ApplicationMode.Hosting)
         {
             ShowDebugMessage("Tab to create Air hockey table");
@@ -255,11 +329,32 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks
         {
             _QuitWithReason("Connected with neither hosting nor resolving mode. Please restart app");
         }
+
+        //resolve 해야하는지 설정
+        if(CloudAnchor_Id != string.Empty)
+        {
+            ShouldResolve = true;
+        } 
     }
 
     private void InstantiatedAnchor()
     {
     }
+    #endregion
+
+    #region Cloud ID
+    public void SetCloudAnchorId(string cloudAnchorId)
+    {
+        CloudAnchor_Id = cloudAnchorId;
+    }
+
+    public string GetCloudAnchorId()
+    {
+        return CloudAnchor_Id;
+    }
+    
+    
+
     #endregion
 
     public void ShowDebugMessage(string debugMessage)

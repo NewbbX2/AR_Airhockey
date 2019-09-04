@@ -8,7 +8,7 @@ public class Game : MonoBehaviour
 
 
 
-    //Ball ,Goal,Score   그리고 PlayerCharacter를 관리할거임.
+    //Ball, PlayerCharacter를 관리할거임.
     //PlayerCharacter는 Stick 관리할거임.
 
 
@@ -45,26 +45,17 @@ public class Game : MonoBehaviour
     }
 
 
-
-    //볼은 게임에서 관리.
-    //퍽은 플레이어에서 관리.
+    //일단은 스피어 만드는식인데
+    //실제 디자인 끝나면 주석으로 대체
     public void SpawnNewBall(Vector3 spawnPosition, Vector3 ballDirection)
     {
         BallObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        //BallObject=GameObject.Find("Ball");
         BallObject.name = "HockeyBall";
+        BallObject.tag = "Ball";
         BallObject.transform.position = spawnPosition;
         BallObject.transform.localScale = new Vector3(0.5f, 0.1f, 0.5f);
         BallObject.AddComponent<BallInforAndMove>();
         BallObject.GetComponent<BallInforAndMove>().BallMoveMent = ballDirection;
     }
 }
-
-
-
-
-
-
-
-
-
-

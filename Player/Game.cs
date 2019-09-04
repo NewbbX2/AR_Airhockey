@@ -7,7 +7,7 @@ public class Game : MonoBehaviour
 
 
 
-
+//아무 오브젝트에나 붙여서(재생성안되는거, 눈에안띄는 엠티추천) 시작.
     //Ball, PlayerCharacter를 관리할거임.
     //PlayerCharacter는 Stick 관리할거임.
 

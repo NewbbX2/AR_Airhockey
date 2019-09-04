@@ -13,40 +13,59 @@ public class MoveStick : MonoBehaviour
     private Vector2 TouchPos;//터치된 위치
     private Vector3 TouchVector;//Ray쏠 방향
     private RaycastHit RayHit;
-    private GameObject Board;
+    private GameObject HockeyBoard;
+    private Vector3 StickDestination;
+    private bool RaycastOn;//RaycastOn가 False면 raycast비활성화
     #endregion
+
+    private float MaxZ;
 
     void Start()
     {
-        GameObject Board = GameObject.FindGameObjectWithTag("Board");
+        HockeyBoard = GameObject.FindGameObjectWithTag("Board");
+        GameObject Puck = GameObject.FindGameObjectWithTag("Puck");
+        RaycastOn = true;
     }
 
     void Update()
     {
-        #region 화면 한곳에만 터치 되었을 때 작동
-        if (Input.touchCount == 1)
+        if (Input.touchCount == 1 && RaycastOn)
         {
-            TouchPos = Input.GetTouch(0).position;   
-            TouchVector = new Vector3(TouchPos.x, TouchPos.y, 0.0f);   
-            Ray TouchRay = Camera.main.ScreenPointToRay(TouchVector);//터치한 방향으로 레이저
+            FindTouchPosition();
+            TouchStick();//하키 채 움직이기
+        }
+    }
 
-            if (Physics.Raycast(TouchRay, out RayHit, Mathf.Infinity))
+    private void TouchStick() //하키 채 움직이기
+    {
+        MaxZ = RayHit.point.z;
+        if (MaxZ >= 0) //하키가 중앙선 못넘게
+        {
+            MaxZ = 0;
+        }
+        transform.position = Vector3.MoveTowards(transform.position, StickDestination, 3 * Time.deltaTime);
+    }
+
+    private void FindTouchPosition() //Raycast로 하키 채가 움직일 위치 찾기
+    {
+        TouchPos = Input.GetTouch(0).position;
+        TouchVector = new Vector3(TouchPos.x, TouchPos.y, 0.0f);
+        Ray TouchRay = Camera.main.ScreenPointToRay(TouchVector);//터치한 방향으로 레이저
+
+        if (Physics.Raycast(TouchRay, out RayHit, Mathf.Infinity))
+        {
+            if (RayHit.collider.tag == "Board")
             {
-                if (RayHit.collider.tag == "Board")
-                {
-                    TouchStick(RayHit.point);//보드에 닿으면 위치로 스틱 움직이기
-                }
-                else if(RayHit.collider.tag == "Puck")
-                {
-                    RayHit.rigidbody.AddForceAtPosition(TouchRay.direction * PokeForce, RayHit.point);//퍽에 닿으면 퍽에 poke
-                }
+                StickDestination = new Vector3(RayHit.point.x, 0.05f, MaxZ); ;//보드에 닿으면 위치 정보 저장
+                MaxZ = RayHit.point.z;
+            }
+            else if (RayHit.collider.tag == "Puck")
+            {
+                RayHit.rigidbody.AddForceAtPosition(TouchRay.direction * PokeForce, RayHit.point);//퍽에 닿으면 퍽에 poke
             }
         }
-        #endregion
+
+        new WaitForSeconds(.1f); //0.1초마다 호출
     }
 
-    private void TouchStick(Vector3 HitPoint) //하키 채 움직이기
-    {
-        transform.position = new Vector3(HitPoint.x, HitPoint.y, HitPoint.z);
-    }
 }

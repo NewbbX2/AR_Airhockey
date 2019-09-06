@@ -45,7 +45,7 @@ public class Ball : MonoBehaviour
         else if (colldedOBJ.name == "Wall_Front" || colldedOBJ.name == "Wall_Back")
         {
             BallMoveMent *= Elasticity;
-            BallMoveMent.y *= -1;
+            BallMoveMent.z *= -1;
         }
         else if (colldedOBJ.tag == "Puck")
         {

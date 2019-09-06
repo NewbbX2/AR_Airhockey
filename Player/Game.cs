@@ -7,7 +7,7 @@ public class Game : MonoBehaviour
 
 
 
-//아무 오브젝트에나 붙여서(재생성안되는거, 눈에안띄는 엠티추천) 시작.
+
     //Ball, PlayerCharacter를 관리할거임.
     //PlayerCharacter는 Stick 관리할거임.
 
@@ -19,16 +19,16 @@ public class Game : MonoBehaviour
 
     void Start()
     {
-        CreatePlayer(1);        CreatePlayer(2);
+        CreatePlayer(1); CreatePlayer(2);
         SpawnNewBall(new Vector3(0, 1F, 0), new Vector3(0, 0, 10));
-        for(int i=0; i<=1; i++)
+        for (int i = 0; i <= 1; i++)
         {
             Score[i] = 0;
-            if(GameObject.FindGameObjectsWithTag("Goal")[0].GetComponent<GoalInf>().TeamNo==i)
+            if (GameObject.FindGameObjectsWithTag("Goal")[0].GetComponent<GoalInf>().TeamNo == i)
             {
                 goal[i] = GameObject.FindGameObjectsWithTag("Goal")[0];
             }
-            else if(GameObject.FindGameObjectsWithTag("Goal")[1].GetComponent<GoalInf>().TeamNo == i)
+            else if (GameObject.FindGameObjectsWithTag("Goal")[1].GetComponent<GoalInf>().TeamNo == i)
             {
                 goal[i] = GameObject.FindGameObjectsWithTag("Goal")[1];
             }
@@ -55,7 +55,17 @@ public class Game : MonoBehaviour
         BallObject.tag = "Ball";
         BallObject.transform.position = spawnPosition;
         BallObject.transform.localScale = new Vector3(0.5f, 0.1f, 0.5f);
-        BallObject.AddComponent<BallInforAndMove>();
-        BallObject.GetComponent<BallInforAndMove>().BallMoveMent = ballDirection;
+        BallObject.AddComponent<Ball>();
+        BallObject.GetComponent<Ball>().BallMoveMent = ballDirection;
     }
 }
+
+
+
+
+
+
+
+
+
+

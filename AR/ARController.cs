@@ -4,34 +4,34 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 using GoogleARCore;
-using GoogleARCore.Examples.Common;
 
 using Photon.Pun;
 using Photon.Realtime;
 
-public class StageController : MonoBehaviourPunCallbacks, IPunObservable
+#if UNITY_EDITOR
+using Input = GoogleARCore.InstantPreviewInput;
+#endif
+
+public class ARController : MonoBehaviourPunCallbacks, IPunObservable
 {
     public Camera FirstPersonCamera;
 
     #region AR Core 공간 감지 변수들
     public GameObject DetectedPlanePrefab; // 감지된 평면을 시각화
     public GameObject HockeyTablePrefab; // 실제로 배치 되는 테이블 프리팹
-
-    //공간감지모드
-    private DetectedPlaneFindingMode AR_PlaneFindingMode;
     #endregion
 
+    private bool isSpawn = false;
     //private const float ModelRotation = 180.0f;
-
-
-    public void Awake()
-    {
-        AR_PlaneFindingMode = DetectedPlaneFindingMode.Horizontal;//수평면만 감지하도록 설정
-    }
-
-
+            
     public void Update()
     {
+        // 이미 배치되었으면 종료
+        if (isSpawn)
+        {
+            return;
+        }
+
         // 터치 없으면 업데이트 종료
         Touch touch;
         if (Input.touchCount < 1 || (touch = Input.GetTouch(0)).phase != TouchPhase.Began)
@@ -69,7 +69,6 @@ public class StageController : MonoBehaviourPunCallbacks, IPunObservable
                     if (detectedPlane.PlaneType == DetectedPlaneType.HorizontalUpwardFacing)
                     {
                         var gameTable = PhotonNetwork.Instantiate(HockeyTablePrefab.name, hit.Pose.position, hit.Pose.rotation);
-                        AR_PlaneFindingMode = DetectedPlaneFindingMode.Disabled; // AR 감지 끄기
                         gameTable.transform.Rotate(0, 0, 0, Space.Self);
                         var anchor = hit.Trackable.CreateAnchor(hit.Pose);
                         gameTable.transform.parent = anchor.transform;

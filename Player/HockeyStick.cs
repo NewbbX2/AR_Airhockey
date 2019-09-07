@@ -7,7 +7,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HockeyStickInf : MonoBehaviour
+public class HockeyStick : MonoBehaviour
 {
     //유저번호
     public int HockeyStickUserNo = 0;
@@ -25,7 +25,7 @@ public class HockeyStickInf : MonoBehaviour
     //시작세팅
     void Start()
     {
-        hockeyBoard = GameObject.FindGameObjectWithTag("Board");
+        hockeyBoard = GameObject.FindGameObjectWithTag("Table");
         HockeyStickObjectSelf = GameObject.FindGameObjectsWithTag("Puck")[HockeyStickUserNo - 1];
     }
 

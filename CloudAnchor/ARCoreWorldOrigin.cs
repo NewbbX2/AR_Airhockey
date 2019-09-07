@@ -3,26 +3,45 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using GoogleARCore;
+using GoogleARCore.Examples.Common;
 
 public class ARCoreWorldOrigin : MonoBehaviour
 {
     #region AR셋팅
     public Transform ARCoreDeviceTransform; // ar 디바이스 위치
+    public GameObject DetectedPlanePrefab; // 바닥 프리팹
     private bool IsOriginPlaced = false; // 앵커로 부터 생성됐는지 알려줌
-    private Transform AnchorTransform;
-
+    private Transform AnchorTransform; // 앵커 트랜스폼
+    private List<DetectedPlane> NewPlanes = new List<DetectedPlane>(); // 앵커 설치후 인지된 바닥 리스트
+    private List<GameObject> Planes = new List<GameObject>(); // 앵커 설치 전 인지된 바닥 리스트
     #endregion
+
+    private void Start()
+    {
         
+    }
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         //traking 상태이면 종료
         if(Session.Status != SessionStatus.Tracking)
         {
             return;
-        }    
-        
-        //plane 생성 자리
+        }
+
+        Pose worldPose = WorldToAnchorPose(Pose.identity);
+
+        Session.GetTrackables<DetectedPlane>(NewPlanes, TrackableQueryFilter.New);
+        foreach(var plane in NewPlanes)
+        {
+            GameObject planeObject = Instantiate(DetectedPlanePrefab, worldPose.position, worldPose.rotation, transform);
+            planeObject.GetComponent<DetectedPlaneVisualizer>().Initialize(plane);
+
+            if (!IsOriginPlaced)
+            {
+                Planes.Add(planeObject);
+            }
+        }
     }
 
     public void SetWorldOrigin(Transform anchorTransform)
@@ -38,6 +57,14 @@ public class ARCoreWorldOrigin : MonoBehaviour
         Pose worldPose = WorldToAnchorPose(new Pose(ARCoreDeviceTransform.position, ARCoreDeviceTransform.rotation));
         ARCoreDeviceTransform.SetPositionAndRotation(worldPose.position, worldPose.rotation);
 
+        foreach(GameObject plane in Planes)
+        {
+            if(plane != null)
+            {
+                plane.transform.SetPositionAndRotation(worldPose.position, worldPose.rotation);
+            }
+        }
+       
         //plane 셋팅 자리
     }
 

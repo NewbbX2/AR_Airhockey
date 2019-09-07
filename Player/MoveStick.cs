@@ -5,25 +5,23 @@ using UnityEngine;
 public class MoveStick : MonoBehaviour
 {
     #region 공개 변수들
-    public GameObject Stick;//하키 채
-    public float PokeForce;//찌르는 듯한 물리효과의 강도
+    public float PokeForce = 5.0f;//찌르는 듯한 물리효과의 강도
     #endregion
 
-    #region 인스펙터에서 보기만 가능한것
+    #region 내부 변수
     private Vector2 TouchPos;//터치된 위치
     private Vector3 TouchVector;//Ray쏠 방향
     private RaycastHit RayHit;
     private GameObject HockeyBoard;
     private Vector3 StickDestination;
     private bool RaycastOn;//RaycastOn가 False면 raycast비활성화
+    private float MaxZ;
     #endregion
 
-    private float MaxZ;
+
 
     void Start()
     {
-        HockeyBoard = GameObject.FindGameObjectWithTag("Board");
-        GameObject Puck = GameObject.FindGameObjectWithTag("Puck");
         RaycastOn = true;
     }
 
@@ -54,7 +52,7 @@ public class MoveStick : MonoBehaviour
 
         if (Physics.Raycast(TouchRay, out RayHit, Mathf.Infinity))
         {
-            if (RayHit.collider.tag == "Board")
+            if (RayHit.collider.tag == "Table")
             {
                 StickDestination = new Vector3(RayHit.point.x, 0.05f, MaxZ); ;//보드에 닿으면 위치 정보 저장
                 MaxZ = RayHit.point.z;

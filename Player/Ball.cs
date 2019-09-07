@@ -49,7 +49,7 @@ public class Ball : MonoBehaviour
         }
         else if (colldedOBJ.tag == "Puck")
         {
-            HockeyStickInf hockeyStickInfor = colldedOBJ.GetComponent<HockeyStickInf>();
+            HockeyStick hockeyStickInfor = colldedOBJ.GetComponent<HockeyStick>();
             BallMoveMent = hockeyStickInfor.StickMoveBall();
         }
     }

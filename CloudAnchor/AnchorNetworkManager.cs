@@ -9,6 +9,10 @@ using System.Collections.Generic;
 
 using TMPro;
 
+#if UNITY_EDITOR
+using Input = GoogleARCore.InstantPreviewInput;
+#endif
+
 /*
 #pragma warning disable 618
 public class AnchorNetworkManager : NetworkManager

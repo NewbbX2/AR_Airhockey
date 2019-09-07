@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
@@ -7,6 +8,7 @@ using Photon.Realtime;
 
 using GoogleARCore;
 using GoogleARCore.CrossPlatform;
+
 
 //에디터 실행시 인스턴트 프리뷰 실행 시키기
 #if UNITY_EDITOR
@@ -30,6 +32,8 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
     public Text RoomLabel;
     public ARCoreWorldOrigin WorldOrigin;
     private string CloudAnchor_Id = string.Empty;
+    public GameObject HockeyTablePrefab; // 실제로 배치 되는 테이블 프리팹
+    private List<AugmentedImage> ImageList = new List<AugmentedImage>();
     #endregion
 
     #region 내부 변수
@@ -52,7 +56,7 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
     // Start is called before the first frame update
     private void Start()
     {
-        ARCoreRoot.SetActive(false);
+        //ARCoreRoot.SetActive(false);
         RoomLabel.text = "Room" + PhotonNetwork.CurrentRoom.Name;
         _ResetStatus();
 
@@ -81,19 +85,36 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
             return;
         }
 
-        //resolving 상태이나 앵커가 없으면 종료
-        if(CurrentMode == ApplicationMode.Resolving && !IsOriginPlaced)
+        /*
+        //이미지로 배치
+        Session.GetTrackables<AugmentedImage>(ImageList, TrackableQueryFilter.Updated);
+        foreach (var image in ImageList)
         {
-            return;
+            if (image.TrackingState == TrackingState.Tracking && !IsOriginPlaced && CurrentMode == ApplicationMode.Hosting)
+            {
+                WorldOriginAnchor = image.CreateAnchor(image.CenterPose);
+                SetWorldOrigin(WorldOriginAnchor.transform);
+                InstantiateAnchor();
+                OnAnchorInstantiated(true);
+            }            
         }
+        */
 
         //터치 입력 없으면 업데이트 종료
         Touch touch;
-        if(Input.touchCount < 1 || (touch = Input.GetTouch(0)).phase != TouchPhase.Began)
+        if (Input.touchCount < 1 || (touch = Input.GetTouch(0)).phase != TouchPhase.Began)
         {
             return;
         }
 
+
+        //resolving 상태이나 앵커가 없으면 종료
+        if (CurrentMode == ApplicationMode.Resolving && !IsOriginPlaced)
+        {
+            return;
+        }
+
+        
         //터치 하면 커스텀된 Raycast 발동
         TrackableHit arcoreHitResult = new TrackableHit();
         LastHitPos = null;
@@ -105,8 +126,14 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
 
         if(LastHitPos != null)
         {
-            // 터치한 곳에 AR오브젝트가 있다면 이곳이 실행됨
-        }
+            if(!IsOriginPlaced && CurrentMode == ApplicationMode.Hosting)
+            {
+                WorldOriginAnchor = arcoreHitResult.Trackable.CreateAnchor(arcoreHitResult.Pose);
+                SetWorldOrigin(WorldOriginAnchor.transform);
+                InstantiateAnchor();
+                OnAnchorInstantiated(true);
+            }
+        }        
 
         //앵커 resolve
         if (ShouldResolve)
@@ -144,7 +171,7 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
             Debug.Log("Reset app from hosting to ready");
         }
         CurrentMode = ApplicationMode.Hosting;
-        ARCoreRoot.SetActive(true);
+        //ARCoreRoot.SetActive(true);
     }
 
     //앵커 받아오기 활성
@@ -158,7 +185,7 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
         }
 
         CurrentMode = ApplicationMode.Resolving;
-        ARCoreRoot.SetActive(true);
+        //ARCoreRoot.SetActive(true);
     }
 
     //앵커 cloud id를 resolve하고 프리팹을 그위에 instantiate
@@ -195,6 +222,12 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
 
     }
 
+    public void InstantiateAnchor()
+    {
+        Instantiate(HockeyTablePrefab, WorldOriginAnchor.transform.position, Quaternion.identity);
+        HostLastPlacedAnchor(WorldOriginAnchor);
+    }
+
     public void OnAnchorInstantiated(bool isHost)
     {
         //이미 앵커가 배치됬으면 실행 안함
@@ -204,7 +237,7 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
         }
         if (isHost)
         {
-            ShowDebugMessage("Hosting Cloud Anchor");
+            //ShowDebugMessage("Hosting Cloud Anchor : " + CloudAnchor_Id);
         }
         else
         {
@@ -219,14 +252,23 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
         if (success)
         {
             ShowDebugMessage("Cloud Anchor successfully hosted!");
-        }        
+        }
+        else
+        {
+            //ShowDebugMessage("Cloud Anchor failed to hosting");
+            //HostLastPlacedAnchor(WorldOriginAnchor);
+        }
     }
 
     public void OnAnchorResolved(bool success, string response)
     {
         if (success)
         {
-            ShowDebugMessage("Cloud Anchor successfully hosted!");
+            ShowDebugMessage("Cloud Anchor successfully resolved!");
+        }
+        else
+        {
+            ShowDebugMessage("Cloud Anchor failed to resolving");
         }
     }
 
@@ -244,6 +286,7 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
             if(result.Response != CloudServiceResponse.Success)
             {
                 Debug.Log(string.Format("Host Cloud Anchor is failed: {0}", result.Response));
+                ShowDebugMessage(result.Response.ToString());
                 OnAnchorHostinged(false, result.Response.ToString());
                 return;
             }

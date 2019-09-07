@@ -44,8 +44,8 @@ public class PlayerCharacter : MonoBehaviour
         StickObject = GameObject.FindGameObjectsWithTag("Puck")[playerNo-1];
         StickObject.name = "HockeyPuck";
         StickObject.transform.localScale = new Vector3(1f, 0.5f, 0.1f);
-        StickObject.AddComponent<HockeyStickInf>();
-        StickObject.GetComponent<HockeyStickInf>().HockeyStickUserNo = playerNo;
+        StickObject.AddComponent<HockeyStick>();
+        StickObject.GetComponent<HockeyStick>().HockeyStickUserNo = playerNo;
 
     }
 

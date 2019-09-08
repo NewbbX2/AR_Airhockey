@@ -66,7 +66,6 @@ public class Game : MonoBehaviour
         BallObject.transform.position = spawnPosition;
         BallObject.transform.localScale = new Vector3(0.5f, 0.1f, 0.5f);
         BallObject.AddComponent<Ball>();
-        BallObject.name = "HockeyBall";
         BallObject.tag = "Ball";
 
 
@@ -76,6 +75,8 @@ public class Game : MonoBehaviour
 
         //공통, 방향지정해서 움직이기.
         BallObject.GetComponent<Ball>().BallMoveMent = ballDirection;
+        //공통, 해당 공은 복제된 공이다.
+        BallObject.name = "HockeyBallCopyed";
     }
 
 

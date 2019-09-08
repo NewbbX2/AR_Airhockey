@@ -31,21 +31,22 @@ public class PlayerCharacter : MonoBehaviour
         gameOBJ = GameObject.Find("GameOBJ").GetComponent<Game>();
         hockeyBoard = GameObject.FindGameObjectWithTag("Board");
         PuckStartSetting();
+
+        //SJ. 세팅하고 세팅한 오브젝트 설치
+        StickStartSetting();
+        Instantiate(StickObject, hockeyBoard.transform.position + new Vector3(0f, 0f, -5f), Quaternion.identity);
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+    //SJ. 하키스틱 설정
+    public void StickStartSetting()
+    {
+        StickObject = GameObject.FindGameObjectsWithTag("Puck")[playerNo - 1];
+        StickObject.name = "HockeyPuck";
+        StickObject.transform.localScale = new Vector3(1f, 0.5f, 0.1f);
+        StickObject.AddComponent<HockeyStick>();
+        StickObject.GetComponent<HockeyStick>().HockeyStickUserNo = playerNo;
+    }
 
 
     //하키스틱 찾은뒤 배치.

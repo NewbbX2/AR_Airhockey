@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Game : MonoBehaviour
 {
@@ -8,6 +9,13 @@ public class Game : MonoBehaviour
 
     //시작전 세팅
     //EmptyObject의 name을 GameOBJ로 수정한뒤, 이 스크립트를 달아준다.
+    
+        
+        //UI에 ScoreText를 연결해둔다.
+         public Text ScoreText;
+
+
+
 
 
 
@@ -18,9 +26,9 @@ public class Game : MonoBehaviour
            //Playercharacter는 스틱을 관리할 것이다.
        //Ball은 종합적인 공의 동작을 관리한다.
     //Score를 관리한다.
-         //정확히는 저장하는 것이며 Palyer에서 이 저장된 점수를 표기할것이다.
     */
-    
+
+    //그 점수를 표기할 스코어텍스트.
 
 
     //공
@@ -31,14 +39,14 @@ public class Game : MonoBehaviour
     void Start()
     {
         //플레이어 생성
-        CreatePlayer(1); CreatePlayer(2);
+        SpawnPlayer(1); SpawnPlayer(2);
         //첫 골을 스폰.
         SpawnNewBall(new Vector3(0, 1F, 0), new Vector3(0, 0, 10));
     }
 
 
     //플레이어번호 n인 플레이어 만듬.
-    void CreatePlayer(int n)
+    void SpawnPlayer(int n)
     {
         GameObject player = new GameObject();
         player.AddComponent<PlayerCharacter>();
@@ -67,14 +75,13 @@ public class Game : MonoBehaviour
         //공통, 방향지정해서 움직이기.
         BallObject.GetComponent<Ball>().BallMoveMent = ballDirection;
     }
+
+
+    //스코어 표기
+    public void SetScoreText(int playerNo)
+    {
+        ScoreText.text = "Team1:" + Score[0] + "Team2:" +Score[1];
+    }
+
+
 }
-
-
-
-
-
-
-
-
-
-

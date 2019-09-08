@@ -9,7 +9,7 @@ public class Game : MonoBehaviour
 
     //시작전 세팅
     //EmptyObject의 name을 GameOBJ로 수정한뒤, 이 스크립트를 달아준다.
-    
+    //tag가 Puck인 퍽2개가 있어야한다.
         
         //UI에 ScoreText를 연결해둔다.
          public Text ScoreText;

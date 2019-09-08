@@ -103,15 +103,8 @@ public class Ball : MonoBehaviour
     {
         if (other.tag == "Goal")
         {
-            DestroyBall();
-
+            Destroy(BallObjectSelf);
         }
-    }
-
-
-    public void DestroyBall()
-    {
-        Destroy(BallObjectSelf);
     }
 
 

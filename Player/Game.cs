@@ -13,6 +13,11 @@ public class Game : MonoBehaviour
         
         //UI에 ScoreText를 연결해둔다.
          public Text ScoreText;
+    //BoardTag가 달린 3D오브젝트 필요.
+    //GoalTag달린 3D오브젝트 필요.
+    //팀번호  아래가 0, 위가 1, 아래골대에 0, 위골대에 1넣어주기.
+
+        //Board, Puck, Goal tag 필요
     //Prefab가 전부 만들어진 경우, /**/방식의 주석을 전부 해제하고, 그 이전에 지우라고 한 코드를 지우면된다.
 
 

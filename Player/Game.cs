@@ -13,20 +13,20 @@ public class Game : MonoBehaviour
         
         //UI에 ScoreText를 연결해둔다.
          public Text ScoreText;
+    //Prefab가 전부 만들어진 경우, /**/방식의 주석을 전부 해제하고, 그 이전에 지우라고 한 코드를 지우면된다.
 
 
 
 
 
 
-
-    /*
+    
     //이 스크립트의 역할
        //Ball과 Playercharacter를 관리할 것이다.
            //Playercharacter는 스틱을 관리할 것이다.
        //Ball은 종합적인 공의 동작을 관리한다.
     //Score를 관리한다.
-    */
+    
 
     //그 점수를 표기할 스코어텍스트.
 
@@ -55,6 +55,8 @@ public class Game : MonoBehaviour
     }
 
 
+    
+
     //일단은 스피어(납작) 만드는식인데
     //실제 디자인 끝나면 주석으로 대체
     public void SpawnNewBall(Vector3 spawnPosition, Vector3 ballDirection)
@@ -69,7 +71,7 @@ public class Game : MonoBehaviour
 
 
         //볼을 복제하는 방식.
-        BallObject = Instantiate(GameObject.Find("Ball"), spawnPosition, Quaternion.identity);
+        /*BallObject = Instantiate(GameObject.Find("Ball"), spawnPosition, Quaternion.identity);*/
 
 
         //공통, 방향지정해서 움직이기.
@@ -78,7 +80,7 @@ public class Game : MonoBehaviour
 
 
     //스코어 표기
-    public void SetScoreText(int playerNo)
+    public void SetScoreText()
     {
         ScoreText.text = "Team1:" + Score[0] + "Team2:" +Score[1];
     }

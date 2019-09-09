@@ -64,7 +64,7 @@ public class Puck : MonoBehaviour
             BallMoveMent *= Elasticity;
             BallMoveMent.z *= -1;
         }
-        else if (colldedOBJ.tag == "Puck")
+        else if (colldedOBJ.tag == "Striker")
         {
             HockeyStriker hockeyStickInfor = colldedOBJ.GetComponent<HockeyStriker>();
             BallMoveMent = hockeyStickInfor.StickMoveBall();

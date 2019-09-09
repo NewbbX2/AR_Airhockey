@@ -1,6 +1,4 @@
 
-
-
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -64,7 +62,7 @@ public class HockeyStriker : MonoBehaviour
         if (checkisStickMovedNow)
         {
             TimeSpan TS = T_Now - T_Past;
-            movementVectorToAffectBall=(Loc_Now- Loc_Past)/TS.Seconds;
+            movementVectorToAffectBall = (Loc_Now - Loc_Past) / TS.Seconds;
         }
         //현재 이동량이 0이거나
         //이전에 이동했던게 너무 약할시
@@ -85,7 +83,7 @@ public class HockeyStriker : MonoBehaviour
     }
 
 
-    Vector3 Loc_Now=new Vector3(0,0,0);
+    Vector3 Loc_Now = new Vector3(0, 0, 0);
     Vector3 Loc_Past = new Vector3(0, 0, 0);
 
 
@@ -103,32 +101,32 @@ public class HockeyStriker : MonoBehaviour
         //짝수팀(아래)가
         if (HockeyStickUserNo % 2 == 0)
         {
-            //공위치:테이블 절반이상일시.
+            //스틱위치:테이블 절반이상일시.
             if (transform.position.z > 0)
             {
                 transform.position = new Vector3(transform.position.x, transform.position.y, 0);
 
             }
-            //공위치:테이블 아래일시
-            //공위치:테이블위일시.
+            //스틱위치:테이블 아래일시
+            //스틱위치:테이블위일시.
             else if (transform.position.z < hockeyBoard.transform.localScale.z)
             {
-                transform.position = new Vector3(transform.position.x,transform.position.y, -hockeyBoard.transform.localScale.z / 2);
+                transform.position = new Vector3(transform.position.x, transform.position.y, -hockeyBoard.transform.localScale.z / 2);
             }
 
         }
         //홀수팀(위)가 
         else if (HockeyStickUserNo % 2 == 1)
         {
-            //공위치:테이블 절반아래일떄
+            //스틱위치:테이블 절반아래일떄
             if (transform.position.z < 0)
             {
-                transform.position = new Vector3(HockeyStickObjectSelf.transform.position.x, transform.position.y, 0);
+                transform.position = new Vector3(transform.position.x, transform.position.y, 0);
             }
-            //공위치:테이블위일시.
+            //스틱위치:테이블위일시.
             else if (transform.position.z > hockeyBoard.transform.localScale.z)
             {
-                transform.position = new Vector3(HockeyStickObjectSelf.transform.position.x, transform.position.y, hockeyBoard.transform.localScale.z / 2);
+                transform.position = new Vector3(transform.position.x, transform.position.y, hockeyBoard.transform.localScale.z / 2);
             }
         }
         //좌우로 벗어난 경우, 테이블 끝으로 가져옴.
@@ -139,7 +137,7 @@ public class HockeyStriker : MonoBehaviour
         }
         else if (transform.position.x < -hockeyBoard.transform.localScale.x / 2)
         {
-            transform.position = new Vector3(hockeyBoard.transform.localScale.x / 2,transform.position.y, transform.position.z);
+            transform.position = new Vector3(hockeyBoard.transform.localScale.x / 2, transform.position.y, transform.position.z);
         }
     }
 

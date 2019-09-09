@@ -90,11 +90,7 @@ public class HockeyStriker : MonoBehaviour
     {
         //스틱 조작후 속도 빛 방향=
         //일단 고정된 스틱인경우의 공이 부딫칠때, 공의 이동방향 및 속도.
-<<<<<<< HEAD
         movementVectorToAffectBall = GameObject.Find("HockeyBall").GetComponent<Puck>().BallMovement;
-=======
-        movementVectorToAffectBall = GameObject.Find("HockeyBallCopyed").GetComponent<Puck>().BallMoveMent;
->>>>>>> 33087f2e1c7ebf1fef750d3f629b49d58d771923
         movementVectorToAffectBall.z *= -1;
 
     }

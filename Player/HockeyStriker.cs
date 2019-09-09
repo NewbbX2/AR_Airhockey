@@ -123,12 +123,12 @@ public class HockeyStriker : MonoBehaviour
             //공위치:테이블 절반아래일떄
             if (transform.position.z < 0)
             {
-                transform.position = new Vector3(HockeyStickObjectSelf.transform.position.x, transform.position.y, 0);
+                transform.position = new Vector3(transform.position.x, transform.position.y, 0);
             }
             //공위치:테이블위일시.
             else if (transform.position.z > hockeyBoard.transform.localScale.z)
             {
-                transform.position = new Vector3(HockeyStickObjectSelf.transform.position.x, transform.position.y, hockeyBoard.transform.localScale.z / 2);
+                transform.position = new Vector3(transform.position.x, transform.position.y, hockeyBoard.transform.localScale.z / 2);
             }
         }
         //좌우로 벗어난 경우, 테이블 끝으로 가져옴.

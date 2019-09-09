@@ -5,6 +5,9 @@ using UnityEngine;
 using GoogleARCore;
 using GoogleARCore.Examples.Common;
 
+/// <summary>
+/// Cloud Anchor의 기준이 되는 AR 앵커를 생성하기 위해서 사용되는 보조적인 클래스입니다.
+/// </summary>
 public class ARCoreWorldOrigin : MonoBehaviour
 {
     #region AR셋팅

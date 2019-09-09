@@ -15,6 +15,10 @@ using GoogleARCore.CrossPlatform;
 using Input = GoogleARCore.InstantPreviewInput;
 #endif
 
+/// <summary>
+/// CloudAnchorController는 AR Core의 Cloud Anchor 기능 뿐 아니라 AR앵커를 생성하고 배치하는 기능을 포함합니다.
+/// </summary>
+
 public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
 {
     public enum ApplicationMode

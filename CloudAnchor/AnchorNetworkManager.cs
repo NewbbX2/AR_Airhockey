@@ -13,6 +13,10 @@ using TMPro;
 using Input = GoogleARCore.InstantPreviewInput;
 #endif
 
+/// <summary>
+/// 플레이어가 네트워크 플레이가 가능하게 연결하기 위한 클래스입니다. Cloud Anchor의 네트워크는 CloudAnchorController를 참고하십시오.
+/// </summary>
+
 /*
 #pragma warning disable 618
 public class AnchorNetworkManager : NetworkManager

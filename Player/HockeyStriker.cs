@@ -1,4 +1,3 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -91,7 +90,7 @@ public class HockeyStriker : MonoBehaviour
     {
         //스틱 조작후 속도 빛 방향=
         //일단 고정된 스틱인경우의 공이 부딫칠때, 공의 이동방향 및 속도.
-        movementVectorToAffectBall = GameObject.Find("HockeyBall").GetComponent<Puck>().BallMoveMent;
+        movementVectorToAffectBall = GameObject.FindWithTag("Puck").GetComponent<Puck>().BallMoveMent;
         movementVectorToAffectBall.z *= -1;
 
     }

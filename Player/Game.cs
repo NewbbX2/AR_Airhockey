@@ -43,21 +43,28 @@ public class Game : MonoBehaviour
 
     void Start()
     {
+        //멀티 플레이 방식에서는 필요없음
         //플레이어 생성
-        SpawnPlayer(1); SpawnPlayer(2);
+        //SpawnPlayer(1); SpawnPlayer(2);
         //첫 골을 스폰.
         SpawnNewBall(new Vector3(0, 1F, 0), new Vector3(0, 0, 10));
     }
 
 
+    //멀티 플레이 방식에서는 필요없음
+    /*
     //플레이어번호 n인 플레이어 만듬.
     void SpawnPlayer(int n)
     {
+        
         GameObject player = new GameObject();
         player.AddComponent<PlayerCharacter>();
+        
         player.name = "player" + n;
         player.GetComponent<PlayerCharacter>().playerNo = n;
+        
     }
+    */
 
 
     
@@ -70,7 +77,7 @@ public class Game : MonoBehaviour
         BallObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         BallObject.transform.position = spawnPosition;
         BallObject.transform.localScale = new Vector3(0.5f, 0.1f, 0.5f);
-        BallObject.AddComponent<Ball>();
+        BallObject.AddComponent<Puck>();
         BallObject.tag = "Ball";
 
 
@@ -79,7 +86,7 @@ public class Game : MonoBehaviour
 
 
         //공통, 방향지정해서 움직이기.
-        BallObject.GetComponent<Ball>().BallMoveMent = ballDirection;
+        BallObject.GetComponent<Puck>().BallMoveMent = ballDirection;
         //공통, 해당 공은 복제된 공이다.
         BallObject.name = "HockeyBallCopyed";
     }

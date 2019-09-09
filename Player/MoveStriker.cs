@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveStick : MonoBehaviour
+public class MoveStriker : MonoBehaviour
 {
     #region 공개 변수들
     public float PokeForce = 5.0f;//찌르는 듯한 물리효과의 강도
@@ -48,7 +48,7 @@ public class MoveStick : MonoBehaviour
     {
         TouchPos = Input.GetTouch(0).position;
         TouchVector = new Vector3(TouchPos.x, TouchPos.y, 0.0f);
-        Ray TouchRay = Camera.main.ScreenPointToRay(TouchVector);//터치한 방향으로 레이저
+        Ray TouchRay = Camera.main.ScreenPointToRay(TouchVector);//터치한 방향으로 Ray 설정
 
         if (Physics.Raycast(TouchRay, out RayHit, Mathf.Infinity))
         {

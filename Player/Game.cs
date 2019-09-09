@@ -78,7 +78,7 @@ public class Game : MonoBehaviour
         BallObject.transform.position = spawnPosition;
         BallObject.transform.localScale = new Vector3(0.5f, 0.1f, 0.5f);
         BallObject.AddComponent<Puck>();
-        BallObject.tag = "Ball";
+        BallObject.tag = "Puck";
 
 
         //볼을 복제하는 방식.

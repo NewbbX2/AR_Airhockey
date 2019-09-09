@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class PlayerCharacter : MonoBehaviour
 {
 
-    //네트워크 환경에서는 의미 없음
+    //네트워크 환경에서는 의미 없음. 플레이어 컨트롤러 없이 바로 striker 스크립트에서 조정할 것
     //자동처리되는 스크립트.
 
 
@@ -29,7 +29,7 @@ public class PlayerCharacter : MonoBehaviour
 
     void Start()
     {
-        _GameController = GameObject.Find("GameOBJ").GetComponent<Game>();
+        _GameController = FindObjectOfType<GameController>();
         hockeyBoard = GameObject.FindGameObjectWithTag("Board");
         PuckStartSetting();
 
@@ -45,8 +45,8 @@ public class PlayerCharacter : MonoBehaviour
         StickObject = GameObject.FindGameObjectsWithTag("Puck")[playerNo - 1];
         StickObject.name = "HockeyPuck";
         StickObject.transform.localScale = new Vector3(1f, 0.5f, 0.1f);
-        StickObject.AddComponent<HockeyStick>();
-        StickObject.GetComponent<HockeyStick>().HockeyStickUserNo = playerNo;
+        StickObject.AddComponent<HockeyStriker>();
+        StickObject.GetComponent<HockeyStriker>().HockeyStickUserNo = playerNo;
     }
 
 

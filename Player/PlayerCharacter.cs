@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class PlayerCharacter : MonoBehaviour
 {
 
+    //네트워크 환경에서는 의미 없음
     //자동처리되는 스크립트.
 
 
@@ -63,9 +64,9 @@ public class PlayerCharacter : MonoBehaviour
             StickObject.transform.localScale = new Vector3(1f, 0.5f, 0.1f);
         }
 
-        StickObject.AddComponent<HockeyStickInf>();
-        StickObject.GetComponent<HockeyStickInf>().HockeyStickUserNo = playerNo;
-        StickObject.GetComponent<HockeyStickInf>().HockeyStickUserNo = playerNo;
+        StickObject.AddComponent<HockeyStriker>();
+        StickObject.GetComponent<HockeyStriker>().HockeyStickUserNo = playerNo;
+        StickObject.GetComponent<HockeyStriker>().HockeyStickUserNo = playerNo;
         }
 
 

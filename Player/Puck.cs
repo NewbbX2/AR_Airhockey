@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ball : MonoBehaviour
+public class Puck : MonoBehaviour
 {
     //볼오브젝트.
     public GameObject BallObjectSelf;
@@ -64,9 +64,9 @@ public class Ball : MonoBehaviour
             BallMoveMent *= Elasticity;
             BallMoveMent.z *= -1;
         }
-        else if (colldedOBJ.tag == "Puck")
+        else if (colldedOBJ.tag == "Striker")
         {
-            HockeyStickInf hockeyStickInfor = colldedOBJ.GetComponent<HockeyStickInf>();
+            HockeyStriker hockeyStickInfor = colldedOBJ.GetComponent<HockeyStriker>();
             BallMoveMent = hockeyStickInfor.StickMoveBall();
         }
     }

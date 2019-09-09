@@ -46,7 +46,7 @@ public class PlayerCharacter : MonoBehaviour
         StickObject.name = "HockeyPuck";
         StickObject.transform.localScale = new Vector3(1f, 0.5f, 0.1f);
         StickObject.AddComponent<HockeyStriker>();
-        StickObject.GetComponent<HockeyStriker>().HockeyStickUserNo = playerNo;
+        StickObject.GetComponent<HockeyStriker>().UserNo = playerNo;
     }
 
 
@@ -65,8 +65,8 @@ public class PlayerCharacter : MonoBehaviour
         }
 
         StickObject.AddComponent<HockeyStriker>();
-        StickObject.GetComponent<HockeyStriker>().HockeyStickUserNo = playerNo;
-        StickObject.GetComponent<HockeyStriker>().HockeyStickUserNo = playerNo;
+        StickObject.GetComponent<HockeyStriker>().UserNo = playerNo;
+        StickObject.GetComponent<HockeyStriker>().UserNo = playerNo;
         }
 
 

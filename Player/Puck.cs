@@ -8,13 +8,12 @@ using UnityEngine;
 public class Puck : MonoBehaviour
 {
     //볼오브젝트.
-    public GameObject BallObjectSelf;
     //충돌후 속도감소(1m/s->0.9m/s)
     public float Elasticity = 0.9f;
          
 
     //볼동작
-    public Vector3 BallMovement;
+    public Vector3 Movement;
     public Rigidbody _Rigidbody;
 
     private GameController _GameController;
@@ -23,20 +22,16 @@ public class Puck : MonoBehaviour
     private void Start()
     {
         _GameController = FindObjectOfType<GameController>();
+
+        _Rigidbody = GetComponent<Rigidbody>();
     }
 
 
     //매번 볼동작시킴.
     void Update()
-    {
-        /*위와 동일, 그러나 아래코드는 프리팹 완성시 필요없다.*/
-        if (_Rigidbody == null)
-        {
-            _Rigidbody = BallObjectSelf.AddComponent<Rigidbody>();
-            _Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-        }
-        //중요, 볼을 동작시킴.
-        _Rigidbody.AddForce(BallMovement);
+    {        
+        //Rigidbody에 힘을 작용시켜서 볼을 동작시킴.
+        _Rigidbody.AddForce(Movement);
 
     }
 
@@ -44,21 +39,21 @@ public class Puck : MonoBehaviour
     void OnCollisionEnter(Collision coll)
     {
         GameObject hitObject = coll.gameObject;
-        Vector3 vec3 = BallMovement;
+        Vector3 vec3 = Movement;
         if (hitObject.name == "Wall_Left" || hitObject.name == "Wall_Right")
         {
-            BallMovement *= Elasticity;
-            BallMovement.x *= -1;
+            Movement *= Elasticity;
+            Movement.x *= -1;
         }
         else if (hitObject.name == "Wall_Front" || hitObject.name == "Wall_Back")
         {
-            BallMovement *= Elasticity;
-            BallMovement.z *= -1;
+            Movement *= Elasticity;
+            Movement.z *= -1;
         }
         else if (hitObject.tag == "Striker")
         {
             HockeyStriker hockeyStickInfor = hitObject.GetComponent<HockeyStriker>();
-            BallMovement = hockeyStickInfor.StickMoveBall();
+            Movement = hockeyStickInfor.StickMoveBall();
         }
     }
 
@@ -106,7 +101,7 @@ public class Puck : MonoBehaviour
     {
         if (other.tag == "Team1" || other.tag == "Team2")
         {
-            Destroy(BallObjectSelf);
+            Destroy(gameObject);
         }
     }
 

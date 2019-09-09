@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 하키 Striker를 조작하기 위한 클래스
+/// </summary>
 public class MoveStriker : MonoBehaviour
 {
     #region 공개 변수들
@@ -14,7 +17,6 @@ public class MoveStriker : MonoBehaviour
     private RaycastHit RayHit;
     private GameObject HockeyBoard;
     private Vector3 StickDestination;
-    private bool RaycastOn;//RaycastOn가 False면 raycast비활성화
     private float MaxZ;
     #endregion
 
@@ -22,26 +24,12 @@ public class MoveStriker : MonoBehaviour
 
     void Start()
     {
-        RaycastOn = true;
     }
 
     void Update()
     {
-        if (Input.touchCount == 1 && RaycastOn)
-        {
-            FindTouchPosition();
-            TouchStick();//하키 채 움직이기
-        }
-    }
-
-    private void TouchStick() //하키 채 움직이기
-    {
-        MaxZ = RayHit.point.z;
-        if (MaxZ >= 0) //하키가 중앙선 못넘게
-        {
-            MaxZ = 0;
-        }
-        transform.position = Vector3.MoveTowards(transform.position, StickDestination, 3 * Time.deltaTime);
+        FindTouchPosition(); //터치 포지션 특정
+        StartCoroutine(TouchStick());//하키 채 움직이기
     }
 
     private void FindTouchPosition() //Raycast로 하키 채가 움직일 위치 찾기
@@ -54,16 +42,30 @@ public class MoveStriker : MonoBehaviour
         {
             if (RayHit.collider.tag == "Table")
             {
-                StickDestination = new Vector3(RayHit.point.x, 0.05f, MaxZ); ;//보드에 닿으면 위치 정보 저장
+                StickDestination = new Vector3(RayHit.point.x, 0.05f, MaxZ); ;//테이블 바닥에 닿으면 위치 정보 저장
                 MaxZ = RayHit.point.z;
             }
             else if (RayHit.collider.tag == "Puck")
-            {
-                RayHit.rigidbody.AddForceAtPosition(TouchRay.direction * PokeForce, RayHit.point);//퍽에 닿으면 퍽에 poke
+            {               
+                //퍽에 닿으면 퍽에 poke
+                //RayHit.rigidbody.AddForceAtPosition(TouchRay.direction * PokeForce, RayHit.point);
             }
+            Debug.Log(StickDestination);
         }
-
-        new WaitForSeconds(.1f); //0.1초마다 호출
     }
+
+    private IEnumerator TouchStick() //하키 채 움직이기
+    {
+        MaxZ = RayHit.point.z;
+        if (MaxZ >= 0) //하키가 중앙선 못넘게
+        {
+            MaxZ = 0;
+        }
+        transform.position = Vector3.MoveTowards(transform.position, StickDestination, 3 * Time.deltaTime);
+
+        yield return new WaitForSeconds(0.1f); //0.1초마다 호출
+    }
+
+   
 
 }

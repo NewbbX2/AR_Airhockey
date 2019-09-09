@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class HockeyStriker : MonoBehaviour
 {
     //유저번호
-    public int HockeyStickUserNo = 0;
+    [Range(1,2)]public int UserNo = 1;
     //스틱 이동방향
     Vector3 movementVectorToAffectBall = new Vector3(0, 0, 0);
 
@@ -70,7 +70,7 @@ public class HockeyStriker : MonoBehaviour
             //너무 약해진경우 벽처럼
             if (movementVectorToAffectBall.sqrMagnitude <= 0.1)
             {
-                calculateSitckSpeedAndDirecWithNoMove();
+                //calculateSitckSpeedAndDirecWithNoMove();
             }
             //아직 덜약해진경우 동작스틱처럼(단, 시간당 파워감소)
             else
@@ -90,7 +90,7 @@ public class HockeyStriker : MonoBehaviour
     {
         //스틱 조작후 속도 빛 방향=
         //일단 고정된 스틱인경우의 공이 부딫칠때, 공의 이동방향 및 속도.
-        movementVectorToAffectBall = GameObject.Find("HockeyBall").GetComponent<Puck>().BallMovement;
+        movementVectorToAffectBall = GameObject.Find("Puck").GetComponent<Puck>().Movement;
         movementVectorToAffectBall.z *= -1;
 
     }
@@ -98,7 +98,7 @@ public class HockeyStriker : MonoBehaviour
     void stickCannotMoveThere()
     {
         //짝수팀(아래)가
-        if (HockeyStickUserNo % 2 == 0)
+        if (UserNo % 2 == 0)
         {
             //스틱위치:테이블 절반이상일시.
             if (transform.position.z > 0)
@@ -115,7 +115,7 @@ public class HockeyStriker : MonoBehaviour
 
         }
         //홀수팀(위)가 
-        else if (HockeyStickUserNo % 2 == 1)
+        else if (UserNo % 2 == 1)
         {
             //스틱위치:테이블 절반아래일떄
             if (transform.position.z < 0)

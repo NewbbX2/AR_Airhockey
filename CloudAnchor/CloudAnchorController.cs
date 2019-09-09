@@ -34,13 +34,14 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
     [Header("ARCore")]
     public GameObject ARCoreRoot;
     public Text RoomLabel;
-    public ARCoreWorldOrigin WorldOrigin;
     private string CloudAnchor_Id = string.Empty;
     public GameObject HockeyTablePrefab; // 실제로 배치 되는 테이블 프리팹
     private List<AugmentedImage> ImageList = new List<AugmentedImage>();
     #endregion
 
     #region 내부 변수
+    private ARCoreWorldOrigin WorldOrigin;
+
     private bool IsOriginPlaced = false; // 앵커가 있는지 확인
     private bool AnchorAlreadyInstantiated = false; // 앵커가 이미 있는지 확인
     private bool AnchorFinishedHosting = false; // 앵커 호스팅이 끝났는지 확인
@@ -60,6 +61,8 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
     // Start is called before the first frame update
     private void Start()
     {
+        WorldOrigin = GetComponent<ARCoreWorldOrigin>();
+
         //ARCoreRoot.SetActive(false);
         RoomLabel.text = "Room" + PhotonNetwork.CurrentRoom.Name;
         _ResetStatus();
@@ -226,9 +229,10 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
 
     }
 
+    //앵커 호스팅, 테이블 배치
     public void InstantiateAnchor()
     {
-        Instantiate(HockeyTablePrefab, WorldOriginAnchor.transform.position, Quaternion.identity);
+        Instantiate(HockeyTablePrefab, WorldOriginAnchor.transform);
         HostLastPlacedAnchor(WorldOriginAnchor);
     }
 

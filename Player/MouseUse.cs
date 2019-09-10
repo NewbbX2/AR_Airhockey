@@ -24,54 +24,34 @@ public class MouseUse : MonoBehaviour
     void Start()
     {
         GameObject Board = GameObject.FindGameObjectWithTag("Board");
+        GameObject Stick = GameObject.FindGameObjectWithTag("Stick");
     }
 
     void Update()
     {
-        /*
-        if (Input.touchCount == 1)
-        {
-            TouchPos = Input.GetTouch(0).position;
-            TouchVector = new Vector3(TouchPos.x, TouchPos.y, 0.0f);
-            Ray TouchRay = Camera.main.ScreenPointToRay(TouchVector);//터치한 방향으로 레이저
-
-            if (Physics.Raycast(TouchRay, out RayHit, Mathf.Infinity))
-            {
-                if (RayHit.collider.tag == "Board")
-                {
-                    TouchStick(RayHit.point);//보드에 닿으면 위치로 스틱 움직이기
-                }
-                else if (RayHit.collider.tag == "Puck")
-                {
-                    RayHit.rigidbody.AddForceAtPosition(TouchRay.direction * PokeForce, RayHit.point);//퍽에 닿으면 퍽에 poke
-                }
-            }
-        }
-        */
         if (Input.GetMouseButtonDown(0))
         {
-            GetMousePointPos();
             MoveStickToMousePos();
         }
     }
 
-    private void TouchStick(Vector3 HitPoint) //하키 채 움직이기
-    {
-        Stick.transform.position = new Vector3(HitPoint.x, HitPoint.y, HitPoint.z);
-    }
-
-    void GetMousePointPos()
-    {
-        screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
-        offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
-    }
-
     void MoveStickToMousePos()
     {
-        Vector3 cursorScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Input.mousePosition.z);//screenPoint.z
-        Vector3 cursorPosition = Camera.main.ScreenToWorldPoint(cursorScreenPoint) + offset;
-        Stick.transform.position = Vector3.MoveTowards(Stick.transform.position, cursorPosition, 3 * Time.deltaTime);
-        Debug.Log("MoveStickToMousePos");
-        Debug.Log(cursorPosition);
+        Vector3 CursorScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0f);//screenPoint.z
+        Ray TouchRay = Camera.main.ScreenPointToRay(CursorScreenPoint);//터치한 방향으로 레이저
+        if (Physics.Raycast(TouchRay, out RayHit, Mathf.Infinity))
+        {
+            if (RayHit.collider.tag == "Board")
+            {
+                Stick.transform.position = Vector3.MoveTowards(Stick.transform.position, RayHit.point, 3 * Time.deltaTime);
+                Debug.Log("MoveStickToMousePos");
+                Debug.Log(cursorPosition);//보드에 닿으면 위치로 스틱 움직이기
+            }
+            else if (RayHit.collider.tag == "Puck")
+            {
+                RayHit.rigidbody.AddForceAtPosition(TouchRay.direction * PokeForce, RayHit.point);//퍽에 닿으면 퍽에 poke
+            }
+        }
+        //yield return null;최적화를 위해선 여기서 raycast제한을 설정할 것
     }
 }

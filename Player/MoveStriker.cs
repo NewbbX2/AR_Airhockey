@@ -9,6 +9,7 @@ public class MoveStriker : MonoBehaviour
 {
     #region 공개 변수들
     public float PokeForce = 5.0f;//찌르는 듯한 물리효과의 강도
+    public float MoveSpeed = 20.0f; // 이동속도
     #endregion
 
     #region 내부 변수
@@ -27,14 +28,29 @@ public class MoveStriker : MonoBehaviour
     }
 
     void Update()
-    {
+    {        
+#if UNITY_EDITOR
+        if (!Input.GetMouseButton(0))
+        {
+            return;
+        }
+#else
+        if(Input.touchCount == 0)
+        {
+            return;
+        }
+#endif
         FindTouchPosition(); //터치 포지션 특정
         StartCoroutine(TouchStick());//하키 채 움직이기
     }
 
     private void FindTouchPosition() //Raycast로 하키 채가 움직일 위치 찾기
     {
+#if UNITY_EDITOR
+        TouchPos = Input.mousePosition;
+#else
         TouchPos = Input.GetTouch(0).position;
+#endif
         TouchVector = new Vector3(TouchPos.x, TouchPos.y, 0.0f);
         Ray TouchRay = Camera.main.ScreenPointToRay(TouchVector);//터치한 방향으로 Ray 설정
 
@@ -50,7 +66,7 @@ public class MoveStriker : MonoBehaviour
                 //퍽에 닿으면 퍽에 poke
                 //RayHit.rigidbody.AddForceAtPosition(TouchRay.direction * PokeForce, RayHit.point);
             }
-            Debug.Log(StickDestination);
+            //Debug.Log(StickDestination);
         }
     }
 
@@ -61,7 +77,7 @@ public class MoveStriker : MonoBehaviour
         {
             MaxZ = 0;
         }
-        transform.position = Vector3.MoveTowards(transform.position, StickDestination, 3 * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, StickDestination, MoveSpeed * Time.deltaTime);
 
         yield return new WaitForSeconds(0.1f); //0.1초마다 호출
     }

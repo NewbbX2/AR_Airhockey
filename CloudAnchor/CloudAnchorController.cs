@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿#define IMAGE
+//#define TOUCH
+//TOUCH = 터치 모드, IMAGE = 이미지 모드
+
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -92,7 +96,7 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
             return;
         }
 
-        /*
+#if IMAGE
         //이미지로 배치
         Session.GetTrackables<AugmentedImage>(ImageList, TrackableQueryFilter.Updated);
         foreach (var image in ImageList)
@@ -105,14 +109,17 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
                 OnAnchorInstantiated(true);
             }            
         }
-        */
+#endif
 
+
+#if TOUCH
         //터치 입력 없으면 업데이트 종료
         Touch touch;
         if (Input.touchCount < 1 || (touch = Input.GetTouch(0)).phase != TouchPhase.Began)
         {
             return;
         }
+#endif
 
 
         //resolving 상태이나 앵커가 없으면 종료
@@ -121,7 +128,7 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
             return;
         }
 
-        
+#if TOUCH
         //터치 하면 커스텀된 Raycast 발동
         TrackableHit arcoreHitResult = new TrackableHit();
         LastHitPos = null;
@@ -140,7 +147,8 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
                 InstantiateAnchor();
                 OnAnchorInstantiated(true);
             }
-        }        
+        } 
+#endif
 
         //앵커 resolve
         if (ShouldResolve)
@@ -154,7 +162,7 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
 
-    #region 앵커 배치 관련 메서드
+#region 앵커 배치 관련 메서드
     //기반 월드 셋
     public void SetWorldOrigin(Transform anchorTransform)
     {
@@ -305,9 +313,9 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
         );
     }
 
-    #endregion
+#endregion
 
-    #region 앱 관련 상태 조정
+#region 앱 관련 상태 조정
     //앱 상태를 리셋
     private void _ResetStatus()
     {
@@ -362,9 +370,9 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
     {
         Application.Quit();
     }
-    #endregion
+#endregion
 
-    #region 네트워크
+#region 네트워크
     private void OnEnterRoom()
     {
         //모드 지정
@@ -391,7 +399,7 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
     private void InstantiatedAnchor()
     {
     }
-    #endregion
+#endregion
        
     public void ShowDebugMessage(string debugMessage)
     {
@@ -399,7 +407,7 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
     }
 
 
-    #region Cloud ID
+#region Cloud ID
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -412,5 +420,5 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
             CloudAnchor_Id = (string)stream.ReceiveNext();
         }
     }
-    #endregion
+#endregion
 }

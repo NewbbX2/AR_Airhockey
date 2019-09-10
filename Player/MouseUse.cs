@@ -41,11 +41,10 @@ public class MouseUse : MonoBehaviour
         Ray TouchRay = Camera.main.ScreenPointToRay(CursorScreenPoint);//터치한 방향으로 레이저
         if (Physics.Raycast(TouchRay, out RayHit, Mathf.Infinity))
         {
-            if (RayHit.collider.tag == "Board")
+            if (RayHit.collider.tag == "Table")//보드에 닿으면 위치로 스틱 움직이기
             {
                 Stick.transform.position = Vector3.MoveTowards(Stick.transform.position, RayHit.point, 3 * Time.deltaTime);
                 Debug.Log("MoveStickToMousePos");
-                Debug.Log(cursorPosition);//보드에 닿으면 위치로 스틱 움직이기
             }
             else if (RayHit.collider.tag == "Puck")
             {

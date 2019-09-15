@@ -28,14 +28,14 @@ public class MoveStriker : MonoBehaviour
     }
 
     void Update()
-    {        
+    {
 #if UNITY_EDITOR
         if (!Input.GetMouseButton(0))
         {
             return;
         }
 #else
-        if(Input.touchCount == 0)
+        if (Input.touchCount == 0)
         {
             return;
         }
@@ -58,30 +58,31 @@ public class MoveStriker : MonoBehaviour
         {
             if (RayHit.collider.tag == "Table")
             {
-                StickDestination = new Vector3(RayHit.point.x, 0.05f, MaxZ); ;//테이블 바닥에 닿으면 위치 정보 저장
                 MaxZ = RayHit.point.z;
+                if (MaxZ >= 0) //하키가 중앙선 못넘게
+                {
+                    MaxZ = 0;
+                }
+                StickDestination = new Vector3(RayHit.point.x, RayHit.point.y + 0.05f, MaxZ);//테이블 바닥에 닿으면 위치 정보 저장
             }
             else if (RayHit.collider.tag == "Puck")
-            {               
+            {
                 //퍽에 닿으면 퍽에 poke
                 //RayHit.rigidbody.AddForceAtPosition(TouchRay.direction * PokeForce, RayHit.point);
             }
             //Debug.Log(StickDestination);
         }
+        yield return new WaitForSeconds(0.1f); //0.1초마다 호출
     }
 
     private IEnumerator TouchStick() //하키 채 움직이기
     {
-        MaxZ = RayHit.point.z;
-        if (MaxZ >= 0) //하키가 중앙선 못넘게
-        {
-            MaxZ = 0;
-        }
+
         transform.position = Vector3.MoveTowards(transform.position, StickDestination, MoveSpeed * Time.deltaTime);
 
         yield return new WaitForSeconds(0.1f); //0.1초마다 호출
     }
 
-   
+
 
 }

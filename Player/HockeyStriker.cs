@@ -61,7 +61,8 @@ public class HockeyStriker : MonoBehaviour
         if (checkisStickMovedNow)
         {
             TimeSpan TS = T_Now - T_Past;
-            movementVectorToAffectBall = (Loc_Now - Loc_Past) / TS.Seconds;
+            //movementVectorToAffectBall = (Loc_Now - Loc_Past) / TS.Seconds;
+            movementVectorToAffectBall = (Loc_Now - Loc_Past) / 10;//델타초가 너무 작아서 그런지 데스크탑 환경에서 벡터 값이 무한/없음이되서 임의값 넣음
         }
         //현재 이동량이 0이거나
         //이전에 이동했던게 너무 약할시

@@ -10,6 +10,7 @@ public class MoveStriker : MonoBehaviour
     #region 공개 변수들
     public float PokeForce = 5.0f;//찌르는 듯한 물리효과의 강도
     public float MoveSpeed = 20.0f; // 이동속도
+    public GameObject MiddlePoint; //경기장 중앙 지점
     #endregion
 
     #region 내부 변수
@@ -19,12 +20,15 @@ public class MoveStriker : MonoBehaviour
     private GameObject HockeyBoard;
     private Vector3 StickDestination;
     private float MaxZ;
+    private float MiddlePointZ; //경기장 중앙 지점의 Z좌표값
     #endregion
 
 
 
     void Start()
     {
+        GameObject MiddlePoint = GameObject.FindGameObjectWithTag("MiddlePoint");
+        MiddlePointZ = MiddlePoint.transform.position.z;
     }
 
     void Update()
@@ -59,9 +63,9 @@ public class MoveStriker : MonoBehaviour
             if (RayHit.collider.tag == "Table")
             {
                 MaxZ = RayHit.point.z;
-                if (MaxZ >= 0) //하키가 중앙선 못넘게
+                if (MaxZ >= MiddlePointZ) //하키가 중앙선 못넘게
                 {
-                    MaxZ = 0;
+                    MaxZ = MiddlePointZ;
                 }
                 StickDestination = new Vector3(RayHit.point.x, RayHit.point.y + 0.05f, MaxZ);//테이블 바닥에 닿으면 위치 정보 저장
             }
@@ -79,7 +83,9 @@ public class MoveStriker : MonoBehaviour
     {
 
         transform.position = Vector3.MoveTowards(transform.position, StickDestination, MoveSpeed * Time.deltaTime);
-
+        //addforce로 해봄. velocity 사용 위해
+        _Rigidbody.AddForce(transform.position - StickDestination);
+         
         yield return new WaitForSeconds(0.1f); //0.1초마다 호출
     }
 

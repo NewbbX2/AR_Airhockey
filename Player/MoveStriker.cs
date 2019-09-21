@@ -11,6 +11,7 @@ public class MoveStriker : MonoBehaviour
     public float PokeForce = 5.0f;//찌르는 듯한 물리효과의 강도
     public float MoveSpeed = 20.0f; // 이동속도
     public GameObject MiddlePoint; //경기장 중앙 지점
+    public Rigidbody StrikerRigidbody;
     #endregion
 
     #region 내부 변수
@@ -81,11 +82,11 @@ public class MoveStriker : MonoBehaviour
 
     private IEnumerator TouchStick() //하키 채 움직이기
     {
-
+        StrikerRigidbody.velocity = StickDestination - transform.position ;
+        /*인전 움직이는 부분
         transform.position = Vector3.MoveTowards(transform.position, StickDestination, MoveSpeed * Time.deltaTime);
-        //addforce로 해봄. velocity 사용 위해
         _Rigidbody.AddForce(transform.position - StickDestination);
-         
+        */
         yield return new WaitForSeconds(0.1f); //0.1초마다 호출
     }
 

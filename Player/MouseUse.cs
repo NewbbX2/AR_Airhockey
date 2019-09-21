@@ -7,7 +7,10 @@ public class MouseUse : MonoBehaviour
     #region 공개 변수들
     public GameObject Stick;//하키 채
     public float PokeForce;//찌르는 듯한 물리효과의 강도
+    public Vector3 CurrentVelocity;//인스펙터에서 속도가 제대로 적용되는지 체크
+    public Rigidbody StrikerRigidbody;
     #endregion
+    
 
     #region 인스펙터에서 보기만 가능한것
     private Vector2 TouchPos;//터치된 위치
@@ -29,9 +32,17 @@ public class MouseUse : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Stick)
         {
-            MoveStickToMousePos();
+            if (StrikerRigidbody)
+            {
+                MoveStickToMousePos();
+            }
+            else { Debug.Log("StrikerRigidbody is not exist"); }
+        }
+        else if (!Stick)
+        {
+            Debug.Log("Stick is not exist");
         }
     }
 
@@ -43,8 +54,10 @@ public class MouseUse : MonoBehaviour
         {
             if (RayHit.collider.tag == "Table")//보드에 닿으면 위치로 스틱 움직이기
             {
-                Stick.transform.position = Vector3.MoveTowards(Stick.transform.position, RayHit.point, 3 * Time.deltaTime);
-                Debug.Log("MoveStickToMousePos");
+                Vector3 StickVelocity;
+                StickVelocity = (RayHit.point - Stick.transform.position); //속도는 거리에 비례함
+                StrikerRigidbody.velocity = StickVelocity; //속도 적용
+                CurrentVelocity = StrikerRigidbody.velocity;//바디의 속도 체크
             }
             else if (RayHit.collider.tag == "Puck")
             {

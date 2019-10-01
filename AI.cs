@@ -1,4 +1,5 @@
 // int GetRealScoreByPuttingNewStoneHere(int r, int l)작성중.
+//    void putNewStoneHere(int r, int l) 수정중
 //오류 점검중.
 //일단 AI가 다음수 서치하는 알고리즘부터 만드는중.
 
@@ -209,9 +210,26 @@ public class AI : MonoBehaviour
             //무승부체크 되있다면 무승부로 기록.
             else if(BS == -102) { recordPattern(0); }
         }
+        //베스트 스코어값이 0이 아니였다면.
+        //분명 탐색안했는데, 탐색가치있는 구간이 있다는 뜻이다.
+        //그중에서도 가장 탐색가치 있는 방향이 여기.
+        //따라서 이어서 탐색 진행.
+         else
+        {
+            //우선 지금 이자리를 두었다고 기록한다.
+            puttiingOrder[R, L] = turn;
+            //실제 돌을 두고, 이에 따라 다른 돌들의 상태를 변경한다.
+            putNewStoneHere(R, L);
+            //다음턴을 진행한다.
+            startNextTurn();
+        }
+
     }
 
+    void putNewStoneHere(int r, int l)
+    {
 
+    }
 
 
 

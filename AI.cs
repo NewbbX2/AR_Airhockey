@@ -1,6 +1,6 @@
 // int GetRealScoreByPuttingNewStoneHere(int r, int l)작성중.
 //오류 점검중.
-//
+//일단 AI가 다음수 서치하는 알고리즘부터 만드는중.
 
 using System.Collections;
 using System.Collections.Generic;

@@ -293,8 +293,9 @@ public class AI : MonoBehaviour
             = winDrawLose.ToString();
     }
 
-    //이미 탐색한수는 검색할필요없다.
 
+
+    //여기다 돌을 놓으면 몇점을 얻는지에 관한 함수.
     int GetRealScoreByPuttingNewStoneHere(int r, int l)
     {
 

@@ -53,7 +53,6 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
     private Component WorldOriginAnchor = null; // 앵커
     private Pose? LastHitPos = null; // AR hit test에서 마지막으로 hit한 곳
     private ApplicationMode CurrentMode = ApplicationMode.Ready;
-    private bool ShouldResolve = false;
 
     #endregion
 
@@ -150,15 +149,19 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
         } 
 #endif
 
-        //앵커 resolve
-        if (ShouldResolve)
+        //앵커 resolve모드일 경우 진입. 다른 모드인데 방장도 아니면 대기 메세지.
+        if (CurrentMode == ApplicationMode.Resolving && !IsOriginPlaced)
         {
             SnackbarText.text = string.Empty;
             ResolveAnchorFromId(CloudAnchor_Id);
         }
-        else if(!PhotonNetwork.IsMasterClient)
+        else if(CurrentMode == ApplicationMode.Ready && !PhotonNetwork.IsMasterClient)
         {
             ShowDebugMessage("Plase wait Player setting table...");
+        }
+        else if(IsOriginPlaced && !PhotonNetwork.IsMasterClient)
+        {
+            ShowDebugMessage("Let's play!");
         }
     }
 
@@ -208,14 +211,12 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
     {
         OnAnchorInstantiated(false);
 
-        // 디바이스가 트래킹하고 있지 않으면 앵커 resolve를 기다리자
+        // 디바이스가 트래킹하고 있지 않으면 종료
         if(Session.Status != SessionStatus.Tracking)
         {
             return;
         }
-
-        ShouldResolve = false;
-
+        
         XPSession.ResolveCloudAnchor(cloudAnchorId).ThenAction(
             (System.Action<CloudAnchorResult>)(result =>
             {
@@ -226,7 +227,6 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
                         cloudAnchorId, result.Response)
                         );
                     OnAnchorResolved(false, result.Response.ToString());
-                    ShouldResolve = true;
                     return;
                 }
                 Debug.Log(string.Format("Client successfully resolved Cloud Anchor {0}", cloudAnchorId));
@@ -389,10 +389,10 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
             _QuitWithReason("Connected with neither hosting nor resolving mode. Please restart app");
         }
 
-        //resolve 해야하는지 설정
+        //cloudanchor의 id가 존재하지 않는다면
         if(CloudAnchor_Id != string.Empty)
         {
-            ShouldResolve = true;
+            IsOriginPlaced = false;
         } 
     }
 

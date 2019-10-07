@@ -132,6 +132,7 @@ public class AnchorNetworkManager : MonoBehaviourPunCallbacks
     public override void OnMasterClientSwitched(Player newMasterClient)
     {
         ShowDebugMessage("Master Client leave room. Exit room in 5 sec...");
+        PhotonNetwork.LeaveRoom();
         Invoke("ExitRoom", 5.0f);
     }
 
@@ -180,7 +181,7 @@ public class AnchorNetworkManager : MonoBehaviourPunCallbacks
     public void ExitRoom()
     {
         SnackbarText.text = string.Empty;
-        PhotonNetwork.LeaveRoom();
+        SceneManager.LoadScene(0);
     }
 
     public void ShowDebugMessage(string debugMessage)

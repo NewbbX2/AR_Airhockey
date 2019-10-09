@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Photon.Pun;
+using Photon.Realtime;
+
 /// <summary>
 /// Puck은 종합적인 공의 동작을 관리합니다.
 /// 마찰을 넣으려면 addforce값과의 균형을 맞출것 
 /// Puck의 Collider에서 Material의 Friction(마찰) 값을 0.0001로 설정했음. puck의 mass는 0.1로 설정
 /// </summary>
-public class Puck : MonoBehaviour
+public class Puck : MonoBehaviourPunCallbacks, IPunObservable
 {
     //볼오브젝트.
     //충돌후 속도감소(1m/s->0.9m/s)
@@ -24,7 +27,6 @@ public class Puck : MonoBehaviour
     private void Start()
     {
         _GameController = FindObjectOfType<GameController>();
-
         _Rigidbody = GetComponent<Rigidbody>();
     }
 
@@ -32,6 +34,10 @@ public class Puck : MonoBehaviour
     //매번 볼동작시킴.
     void Update()
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
         Movement = _Rigidbody.velocity; //에디터 상에서 움직임 확인 위해서, 이제 움직임을 주는데 쓰지 않음
     }
 
@@ -115,6 +121,22 @@ public class Puck : MonoBehaviour
         }
     }
 
-
+    #region 포톤뷰 통신부분
+    private Vector3 currentPos;
+    private Quaternion currentRot;
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(transform.position);
+            stream.SendNext(transform.rotation);
+        }
+        else
+        {
+            currentPos = (Vector3)stream.ReceiveNext();
+            currentRot = (Quaternion)stream.ReceiveNext();
+        }
+    }
+    #endregion
 
 }

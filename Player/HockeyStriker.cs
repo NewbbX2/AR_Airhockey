@@ -14,13 +14,14 @@ public class HockeyStriker : MonoBehaviour
     //보드 오브젝트
     GameObject hockeyBoard;
 
-
+    private Rigidbody StrikerRigidbody;
 
 
     //시작세팅
     void Start()
     {
         hockeyBoard = GameObject.FindGameObjectWithTag("Table");
+        StrikerRigidbody = GetComponent<Rigidbody>();
         //네트워크에서는 필요없음
         /*
         //Striker 태그와 배열 index로 특정짓기

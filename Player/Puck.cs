@@ -2,24 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using Photon.Pun;
-using Photon.Realtime;
-
 /// <summary>
-/// Puck은 종합적인 공의 동작을 관리합니다.
-/// 마찰을 넣으려면 addforce값과의 균형을 맞출것 
-/// Puck의 Collider에서 Material의 Friction(마찰) 값을 0.0001로 설정했음. puck의 mass는 0.1로 설정
+///  Puck은 종합적인 공의 동작을 관리합니다.
+/// 줄 36과 45을 주석처리함. 이는 생성한 벽이 좌우앞뒤 구분이 없기 때문이고, addforce를 퍽에 매번 적용시키는 것보다 마찰을
+/// 0으로 만드는게 당장 에디터에서 할땐 나아서. 만약 마찰을 넣으려면 addforce값과의 균형을 맞출것 
+/// Puck의 Collider에서 Material의 Friction(마찰) 값을 0.0001로 설정했음
 /// </summary>
-public class Puck : MonoBehaviourPunCallbacks, IPunObservable
+/// 
+public class Puck : MonoBehaviour
 {
     //볼오브젝트.
     //충돌후 속도감소(1m/s->0.9m/s)
     public float Elasticity = 0.9f;
-         
+
 
     //볼동작
     public Vector3 Movement;
-    [System.NonSerialized]public Rigidbody _Rigidbody;
+    public Rigidbody _Rigidbody;
 
     private GameController _GameController;
 
@@ -27,6 +26,7 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
     private void Start()
     {
         _GameController = FindObjectOfType<GameController>();
+
         _Rigidbody = GetComponent<Rigidbody>();
     }
 
@@ -34,20 +34,9 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
     //매번 볼동작시킴.
     void Update()
     {
-        if (!photonView.IsMine)
-        {
-            if ((transform.position - currentPos).sqrMagnitude >= 10.0f * 10.0f)
-            {
-                transform.position = currentPos;
-                transform.rotation = currentRot;
-            }
-            else
-            {
-                transform.position = Vector3.Lerp(transform.position, currentPos, Time.deltaTime * 10.0f);
-                transform.rotation = Quaternion.Slerp(transform.rotation, currentRot, Time.deltaTime * 10.0f);
-            }
-        }
-        Movement = _Rigidbody.velocity; //에디터 상에서 움직임 확인 위해서, 이제 움직임을 주는데 쓰지 않음
+        //Rigidbody에 힘을 작용시켜서 볼을 동작시킴.
+        //_Rigidbody.AddForce(Movement); 
+        Movement = _Rigidbody.velocity;
     }
 
     //충돌한 오브젝트에 따라 동작.
@@ -55,13 +44,12 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
     {
         GameObject hitObject = coll.gameObject;
         Vector3 vec3;
-        
         if (hitObject.name == "Wall_Left" || hitObject.name == "Wall_Right")
         {
             Vector3 CurrentVelocity = _Rigidbody.velocity;
             CurrentVelocity.x *= -1;
         }
-        /* 
+        /*
         else if (hitObject.name == "Wall_Front" || hitObject.name == "Wall_Back")
         {
             Movement *= Elasticity;
@@ -71,7 +59,7 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
         if (hitObject.tag == "Striker")
         {
             HockeyStriker hockeyStickInfor = hitObject.GetComponent<HockeyStriker>();
-            vec3 = hockeyStickInfor.StickMoveBall() * 10f; //이정도 값을 해야 좀 속도가 났음,
+            vec3 = hockeyStickInfor.StickMoveBall() * 10f; //이정도 값을 해야 좀 속도가 났음
             _Rigidbody.AddForce(vec3);
         }
     }
@@ -80,44 +68,36 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
     //골에 닿을시 작동. 코너 트리거 박스면 튕기는 듯한 이펙트
     private void OnTriggerEnter(Collider trigger)
     {
-        /*
         if (trigger.tag == "Goal")
         {
-            if (trigger.GetComponent<GoalInf>().TeamNo == 0)
+            switch (trigger.GetComponent<GoalInf>().TeamNo)
             {
-                GameController gameOBJ = GameObject.Find("GameOBJ").GetComponent<GameController>();
-                gameOBJ.Score[1] += 1;
-                gameOBJ.SpawnNewBall(new Vector3(0, 1F, 0), new Vector3(0, 0, 10));
-                RigidBody_Ball.constraints = RigidbodyConstraints.None;
-            }
-            else
-            {
-                GameController gameOBJ = GameObject.Find("GameOBJ").GetComponent<GameController>();
-                gameOBJ.Score[0] += 1;
-                gameOBJ.SpawnNewBall(new Vector3(0, 1F, 0), new Vector3(0, 0, -10));
-                RigidBody_Ball.constraints = RigidbodyConstraints.None;
+                case 1:
+                    _GameController.ScoreUp(2);
+                    _GameController.SpawnNewPuck(1);
+                    Destroy(this.gameObject);
+                    break;
 
+                case 2:
+                    _GameController.ScoreUp(1);
+                    _GameController.SpawnNewPuck(2);
+                    Destroy(this.gameObject);
+                    break;
             }
 
         }
-        */
         if (trigger.tag == "Corner")
         {
+            //Vector3 CurrentVelocity = _Rigidbody.velocity;
+            //_Rigidbody.velocity = new Vector3(-CurrentVelocity.z, 0, -CurrentVelocity.x); //벽에 튕기는 것처럼 벡터 변경
+            //Debug.Log("Hit Corner");
+            //Debug.Log(trigger.transform.eulerAngles.y);
             //반사각 계산을 위한 코너 벽면의 법선 산출
             Vector3 inNormal_OfTrigger = new Vector3(Mathf.Cos(Mathf.Deg2Rad * trigger.transform.eulerAngles.y), 0, -Mathf.Sin(Mathf.Deg2Rad * trigger.transform.eulerAngles.y));
-            _Rigidbody.velocity = Vector3.Reflect(_Rigidbody.velocity, inNormal_OfTrigger);//물체가 반사되는 듯한 효과
-        }
-        switch (trigger.tag)
-        {
-            case "Team1":
-                _GameController.ScoreUp(2);
-                _GameController.SpawnNewPuck(1);
-                break;
-
-            case "Team2":
-                _GameController.ScoreUp(1);
-                _GameController.SpawnNewPuck(2);
-                break;
+            //Debug.Log(inNormal_OfTrigger);
+            //Debug.Log(_Rigidbody.velocity.ToString());
+            _Rigidbody.velocity = Vector3.Reflect(_Rigidbody.velocity, inNormal_OfTrigger);//transform.position
+            //Debug.Log(_Rigidbody.velocity.ToString());
         }
     }
 
@@ -130,22 +110,6 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
 
-    #region 포톤뷰 통신부분
-    private Vector3 currentPos;
-    private Quaternion currentRot;
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            stream.SendNext(transform.position);
-            stream.SendNext(transform.rotation);
-        }
-        else
-        {
-            currentPos = (Vector3)stream.ReceiveNext();
-            currentRot = (Quaternion)stream.ReceiveNext();
-        }
-    }
-    #endregion
+
 
 }

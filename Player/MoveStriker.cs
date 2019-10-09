@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿#define MOUSE
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
@@ -7,12 +8,19 @@ using Photon.Realtime;
 /// <summary>
 /// 하키 Striker를 조작하기 위한 클래스
 /// </summary>
+
+enum PlayerNumber
+{
+    Player1,
+    Player2,
+}
 public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
 {
     #region 공개 변수들
     public float PokeForce = 5.0f;//찌르는 듯한 물리효과의 강도
     public float MoveSpeed = 20.0f; // 이동속도
     public GameObject MiddlePoint; //경기장 중앙 지점
+    [Range(0,1)]public int Controller;
     #endregion
 
     #region 내부 변수
@@ -24,6 +32,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
     private float MaxZ;
     private float MiddlePointZ; //경기장 중앙 지점의 Z좌표값
     private Rigidbody StrikerRigidbody;
+    private PlayerNumber PlayerNum;
     #endregion
 
 
@@ -32,6 +41,18 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
     {
         StrikerRigidbody = GetComponent<Rigidbody>();
         MiddlePointZ = MiddlePoint.transform.position.z;
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PlayerNum = PlayerNumber.Player1;
+        }
+        else
+        {
+            PlayerNum = PlayerNumber.Player2;
+        }
+        if ((int)PlayerNum == Controller && !photonView.IsMine)
+        {
+            photonView.RequestOwnership();
+        }
     }
 
     void Update()
@@ -48,13 +69,16 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
                 transform.position = Vector3.Lerp(transform.position, currentPos, Time.deltaTime * 10.0f);
                 transform.rotation = Quaternion.Slerp(transform.rotation, currentRot, Time.deltaTime * 10.0f);
             }
+            //Debug.Log("is Not Mine");
             return;
         }
-#if UNITY_EDITOR
-        if (!Input.GetMouseButton(0))
+#if UNITY_EDITOR || MOUSE
+        if (!Input.GetMouseButton(0) || (int)PlayerNum != Controller)
         {
+            //Debug.Log("Player Num = " + PlayerNum);
             return;
         }
+        //Debug.Log("Mouse Mode");
 #else
         if (Input.touchCount == 0)
         {
@@ -67,7 +91,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
 
     private void FindTouchPosition() //Raycast로 하키 채가 움직일 위치 찾기
     {
-#if UNITY_EDITOR
+#if UNITY_EDITOR || MOUSE
         TouchPos = Input.mousePosition;
 #else
         TouchPos = Input.GetTouch(0).position;

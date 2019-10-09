@@ -32,7 +32,7 @@ public class NetworkTest : MonoBehaviourPunCallbacks
     {
         Debug.Log("Join!");
         SceneManager.LoadScene(1);
-    }
+    }    
 
     public void OnButtonDown()
     {

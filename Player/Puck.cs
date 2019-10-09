@@ -19,7 +19,7 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
 
     //볼동작
     public Vector3 Movement;
-    public Rigidbody _Rigidbody;
+    [System.NonSerialized]public Rigidbody _Rigidbody;
 
     private GameController _GameController;
 
@@ -36,7 +36,16 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (!photonView.IsMine)
         {
-            return;
+            if ((transform.position - currentPos).sqrMagnitude >= 10.0f * 10.0f)
+            {
+                transform.position = currentPos;
+                transform.rotation = currentRot;
+            }
+            else
+            {
+                transform.position = Vector3.Lerp(transform.position, currentPos, Time.deltaTime * 10.0f);
+                transform.rotation = Quaternion.Slerp(transform.rotation, currentRot, Time.deltaTime * 10.0f);
+            }
         }
         Movement = _Rigidbody.velocity; //에디터 상에서 움직임 확인 위해서, 이제 움직임을 주는데 쓰지 않음
     }

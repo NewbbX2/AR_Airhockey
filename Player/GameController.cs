@@ -26,8 +26,9 @@ public class GameController : MonoBehaviour
     #region Inspector용 공개 변수
     public Transform SpawnPoint1;
     public Transform SpawnPoint2;
-    public TextMeshProUGUI ScoreText;    // 스코어 표시할 텍스트
+    public TextMeshPro ScoreText;    // 스코어 표시할 텍스트
     public GameObject PuckPrefab; //스폰할 퍽 프리팹
+    public Camera MainCamera;
     #endregion
 
 
@@ -41,14 +42,15 @@ public class GameController : MonoBehaviour
         //멀티 플레이 방식에서는 필요없음 
         Debug.Log("GameStart");
         //플레이어 생성
-        //SpawnPlayer(1); SpawnPlayer(2);
+        //버그 걸림 SpawnPlayer(1); SpawnPlayer(2);
         //첫 퍽을 스폰.
-        SpawnNewPuck(0);
+        SpawnNewPuck(1);
     }
 
     private void Update()
     {
-     
+        ScoreText.transform.LookAt(ScoreText.transform.position /*+ MainCamera.transform.rotation * Vector3.back*/ ,
+            MainCamera.transform.rotation * Vector3.down);
     }
 
     //멀티 플레이 방식에서는 필요없음
@@ -68,7 +70,7 @@ public class GameController : MonoBehaviour
     //스코어 표기
     private void SetScoreText()
     {
-        ScoreText.text = "Team1:" + Score[0] + "  Team2:" + Score[1];
+        ScoreText.text = "Team1:" + Score[0] + "  ||  " + "Team2:" + Score[1];
     }
 
     //게임 종료
@@ -79,17 +81,21 @@ public class GameController : MonoBehaviour
 
 
     //퍽 배치
+    /// <summary>
+    /// 매개변수는 스폰시킬 위치
+    /// </summary>
+    /// <param name="spawnTeamNum"></param>
     public void SpawnNewPuck(int spawnTeamNum)
     {
         //어느 팀에 배치해 줄 건지 포인트 지정
         Vector3 spawnPoint = Vector3.zero;
         switch (spawnTeamNum)
         {
-            case 0:
+            case 1:
                 spawnPoint = SpawnPoint1.position;
                 break;
 
-            case 1:
+            case 2:
                 spawnPoint = SpawnPoint2.position;
                 break;
 
@@ -103,6 +109,10 @@ public class GameController : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// 점수를 올리고 싶은 플레이어의 번호를 매개변수에 넣으시오
+    /// </summary>
+    /// <param name="playerNum"></param>
     public void ScoreUp(int playerNum)
     {
         //골 넣은쪽에 점수 올리고 넣은 사람 쪽으로 퍽 스폰

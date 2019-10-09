@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Photon.Pun;
+using Photon.Realtime;
 /// <summary>
 ///  Puck은 종합적인 공의 동작을 관리합니다.
 /// 줄 36과 45을 주석처리함. 이는 생성한 벽이 좌우앞뒤 구분이 없기 때문이고, addforce를 퍽에 매번 적용시키는 것보다 마찰을
@@ -9,7 +10,7 @@ using UnityEngine;
 /// Puck의 Collider에서 Material의 Friction(마찰) 값을 0.0001로 설정했음
 /// </summary>
 /// 
-public class Puck : MonoBehaviour
+public class Puck : MonoBehaviourPunCallbacks, IPunObservable
 {
     //볼오브젝트.
     //충돌후 속도감소(1m/s->0.9m/s)
@@ -17,8 +18,8 @@ public class Puck : MonoBehaviour
 
 
     //볼동작
-    public Vector3 Movement;
-    public Rigidbody _Rigidbody;
+    [System.NonSerialized]public Vector3 Movement;
+    [System.NonSerialized]public Rigidbody _Rigidbody;
 
     private GameController _GameController;
 
@@ -34,6 +35,19 @@ public class Puck : MonoBehaviour
     //매번 볼동작시킴.
     void Update()
     {
+        if (!photonView.IsMine)
+        {
+            if ((transform.position - currentPos).sqrMagnitude >= 10.0f * 10.0f)
+            {
+                transform.position = currentPos;
+                transform.rotation = currentRot;
+            }
+            else
+            {
+                transform.position = Vector3.Lerp(transform.position, currentPos, Time.deltaTime * 10.0f);
+                transform.rotation = Quaternion.Slerp(transform.rotation, currentRot, Time.deltaTime * 10.0f);
+            }
+        }
         //Rigidbody에 힘을 작용시켜서 볼을 동작시킴.
         //_Rigidbody.AddForce(Movement); 
         Movement = _Rigidbody.velocity;
@@ -72,15 +86,15 @@ public class Puck : MonoBehaviour
         {
             switch (trigger.GetComponent<GoalInf>().TeamNo)
             {
-                case 1:
-                    _GameController.ScoreUp(2);
-                    _GameController.SpawnNewPuck(1);
+                case 0:
+                    _GameController.ScoreUp(1);
+                    _GameController.SpawnNewPuck(0);
                     Destroy(this.gameObject);
                     break;
 
-                case 2:
-                    _GameController.ScoreUp(1);
-                    _GameController.SpawnNewPuck(2);
+                case 1:
+                    _GameController.ScoreUp(0);
+                    _GameController.SpawnNewPuck(1);
                     Destroy(this.gameObject);
                     break;
             }
@@ -110,6 +124,22 @@ public class Puck : MonoBehaviour
         }
     }
 
-
+    #region 포톤뷰 통신부분
+    private Vector3 currentPos;
+    private Quaternion currentRot;
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(transform.position);
+            stream.SendNext(transform.rotation);
+        }
+        else
+        {
+            currentPos = (Vector3)stream.ReceiveNext();
+            currentRot = (Quaternion)stream.ReceiveNext();
+        }
+    }
+    #endregion
 
 }

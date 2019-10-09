@@ -103,11 +103,14 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
         {
             if (RayHit.collider.tag == "Table")
             {
+                
                 MaxZ = RayHit.point.z;
+                /*
                 if (MaxZ >= MiddlePointZ) //하키가 중앙선 못넘게
                 {
                     MaxZ = MiddlePointZ;
-                }                
+                } 
+                */
                 StickDestination = new Vector3(RayHit.point.x, RayHit.point.y + 0.05f, MaxZ);//테이블 바닥에 닿으면 위치 정보 저장
                 //Debug.Log(StickDestination);
             }

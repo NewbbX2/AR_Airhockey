@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 //시작전 세팅
 //EmptyObject의 name을 GameOBJ로 수정한뒤, 이 스크립트를 달아준다.
@@ -25,9 +26,8 @@ public class GameController : MonoBehaviour
     #region Inspector용 공개 변수
     public Transform SpawnPoint1;
     public Transform SpawnPoint2;
-    public TextMesh ScoreText;    // 스코어 표시할 텍스트
+    public TextMeshProUGUI ScoreText;    // 스코어 표시할 텍스트
     public GameObject PuckPrefab; //스폰할 퍽 프리팹
-    public Camera MainCamera;
     #endregion
 
 
@@ -41,15 +41,14 @@ public class GameController : MonoBehaviour
         //멀티 플레이 방식에서는 필요없음 
         Debug.Log("GameStart");
         //플레이어 생성
-        SpawnPlayer(1); SpawnPlayer(2);
+        //SpawnPlayer(1); SpawnPlayer(2);
         //첫 퍽을 스폰.
-        SpawnNewPuck(1);
+        SpawnNewPuck(0);
     }
 
     private void Update()
     {
-        ScoreText.transform.LookAt(ScoreText.transform.position /*+ MainCamera.transform.rotation * Vector3.back*/ ,
-            MainCamera.transform.rotation * Vector3.down);
+     
     }
 
     //멀티 플레이 방식에서는 필요없음
@@ -69,7 +68,7 @@ public class GameController : MonoBehaviour
     //스코어 표기
     private void SetScoreText()
     {
-        ScoreText.text = "Team1:" + Score[0] + "Team2:" + Score[1];
+        ScoreText.text = "Team1:" + Score[0] + "  Team2:" + Score[1];
     }
 
     //게임 종료
@@ -86,11 +85,11 @@ public class GameController : MonoBehaviour
         Vector3 spawnPoint = Vector3.zero;
         switch (spawnTeamNum)
         {
-            case 1:
+            case 0:
                 spawnPoint = SpawnPoint1.position;
                 break;
 
-            case 2:
+            case 1:
                 spawnPoint = SpawnPoint2.position;
                 break;
 
@@ -107,7 +106,7 @@ public class GameController : MonoBehaviour
     public void ScoreUp(int playerNum)
     {
         //골 넣은쪽에 점수 올리고 넣은 사람 쪽으로 퍽 스폰
-        Score[playerNum - 1]++;
+        Score[playerNum]++;
         SetScoreText();
     }
 }

@@ -25,7 +25,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
 
     #region 내부 변수
 
-    private bool isTouched = false;
+    private float stickSpeed = 10.0f;
 
 
     private Vector2 TouchPos;//터치된 위치
@@ -63,14 +63,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (!photonView.IsMine)
         {
-            if ((transform.position - currentPos).sqrMagnitude <= 10.0f * 10.0f)
-            {
-                transform.position = currentPos;
-            }
-            else
-            {
-                transform.position = Vector3.Lerp(transform.position, currentPos,  10.0f);
-            }
+            transform.position = currentPos;
             return;
         }
 #if UNITY_EDITOR || MOUSE
@@ -114,7 +107,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
                     MaxZ = MiddlePointZ;
                 }
 
-                StickDestination = new Vector3(RayHit.point.x, RayHit.point.y + 0.5f, MaxZ);//테이블 바닥에 닿으면 위치 정보 저장
+                StickDestination = new Vector3(RayHit.point.x, RayHit.point.y + 0.05f, MaxZ);//테이블 바닥에 닿으면 위치 정보 저장
             }
             else
             {
@@ -124,7 +117,11 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
 
     private IEnumerator TouchStick() //하키 채 움직이기
     {
-        StrikerRigidbody.velocity = (StickDestination - transform.position).normalized*10.0f;
+        StrikerRigidbody.velocity = (StickDestination - transform.position)* stickSpeed;
+
+
+
+
         /*인전 움직이는 부분
         transform.position = Vector3.MoveTowards(transform.position, StickDestination, MoveSpeed * Time.deltaTime);
         _Rigidbody.AddForce(transform.position - StickDestination);

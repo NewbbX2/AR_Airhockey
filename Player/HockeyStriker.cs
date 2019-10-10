@@ -117,7 +117,19 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
 
     private IEnumerator TouchStick() //하키 채 움직이기
     {
-        StrikerRigidbody.velocity = (StickDestination - transform.position)* stickSpeed;
+       
+    {
+
+        if ((transform.position - currentPos).sqrMagnitude <= 10.0f * 10.0f)
+        {
+            transform.position =  currentPos;
+        }
+        else
+        {
+            StrikerRigidbody.velocity = (StickDestination - transform.position)normalized * stickSpeed;
+        }
+
+
 
 
 

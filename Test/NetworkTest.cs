@@ -31,6 +31,7 @@ public class NetworkTest : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.Log("Join!");
+        PhotonNetwork.AutomaticallySyncScene = true;
         SceneManager.LoadScene(1);
     }    
 

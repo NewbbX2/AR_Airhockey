@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
+using Photon.Pun;
+using Photon.Realtime;
 //시작전 세팅
 //EmptyObject의 name을 GameOBJ로 수정한뒤, 이 스크립트를 달아준다.
 //tag가 Striker인 오브젝트가 2개가 있어야한다.
@@ -20,7 +21,7 @@ using TMPro;
 /// <summary>
 /// Puck과 Playercharacter, 스코어등 게임 전반적인 내용을 관리합니다.
 /// </summary>
-public class GameController : MonoBehaviour
+public class GameController : MonoBehaviourPunCallbacks
 {
 
     #region Inspector용 공개 변수
@@ -43,7 +44,10 @@ public class GameController : MonoBehaviour
         //플레이어 생성
         //SpawnPlayer(1); SpawnPlayer(2);
         //첫 퍽을 스폰.
-        SpawnNewPuck(0);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            SpawnNewPuck(0);
+        }        
     }
 
     private void Update()
@@ -99,7 +103,7 @@ public class GameController : MonoBehaviour
         }
 
         //프리팹을 이용하여 인스턴스화
-        Instantiate(PuckPrefab, spawnPoint, Quaternion.identity);
+        PhotonNetwork.Instantiate(PuckPrefab.name, spawnPoint, Quaternion.identity);
 
     }
 

@@ -31,11 +31,10 @@ public class PlayerCharacter : MonoBehaviour
     {
         _GameController = FindObjectOfType<GameController>();
         hockeyBoard = GameObject.FindGameObjectWithTag("Board");
-        PuckStartSetting();
 
         //SJ. 세팅하고 세팅한 오브젝트 설치
         StickStartSetting();
-        Instantiate(StickObject, hockeyBoard.transform.position + new Vector3(0f, 0f, -5f), Quaternion.identity);
+        Instantiate(StickObject, hockeyBoard.transform.position + new Vector3(0f, 0.5f, -5f), Quaternion.identity);
     }
 
 
@@ -50,27 +49,8 @@ public class PlayerCharacter : MonoBehaviour
     }
 
 
-    //하키스틱 찾은뒤 배치.
-    public void PuckStartSetting()
-    {
-        StickObject = GameObject.FindGameObjectsWithTag("Puck")[playerNo - 1];
-        StickObject.name = "HockeyPuck" + playerNo;
-        if (playerNo == 1)
-        {
-            StickObject.transform.localScale = new Vector3(1f, 0.5f, 0.1f);
-        }
-        else if(playerNo==2)
-        {
-            StickObject.transform.localScale = new Vector3(1f, 0.5f, 0.1f);
-        }
-
-        StickObject.AddComponent<HockeyStriker>();
-        StickObject.GetComponent<HockeyStriker>().UserNo = playerNo;
-        StickObject.GetComponent<HockeyStriker>().UserNo = playerNo;
-        }
 
 
 
 
 }
-

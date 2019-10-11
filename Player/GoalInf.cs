@@ -6,5 +6,5 @@ using UnityEngine;
 //골에 붙는 정보.
 public class GoalInf : MonoBehaviour
 {
-    [Range(0,1)]public int TeamNo;//
+    [Range(0,1)]public int TeamNo;
 }

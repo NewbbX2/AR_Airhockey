@@ -16,7 +16,6 @@ using Photon.Realtime;
 //1p의 점수는 score[0] 2p 는 score[1]
 
 //Board, Puck, Goal tag 필요
-//Prefab가 전부 만들어진 경우, /**/방식의 주석을 전부 해제하고, 그 이전에 지우라고 한 코드를 지우면된다.
 
 /// <summary>
 /// Puck과 Playercharacter, 스코어등 게임 전반적인 내용을 관리합니다.

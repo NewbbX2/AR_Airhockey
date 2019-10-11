@@ -27,9 +27,8 @@ public class GameController : MonoBehaviourPunCallbacks
     #region Inspector용 공개 변수
     public Transform SpawnPoint1;
     public Transform SpawnPoint2;
-    public TextMeshPro ScoreText;    // 스코어 표시할 텍스트
+    public TextMeshProUGUI ScoreText;    // 스코어 표시할 텍스트
     public GameObject PuckPrefab; //스폰할 퍽 프리팹
-    public Camera MainCamera;
     #endregion
 
 
@@ -52,9 +51,7 @@ public class GameController : MonoBehaviourPunCallbacks
     }
 
     private void Update()
-    {
-        ScoreText.transform.LookAt(ScoreText.transform.position /*+ MainCamera.transform.rotation * Vector3.back*/ ,
-            MainCamera.transform.rotation * Vector3.down);
+    {        
     }
 
     //멀티 플레이 방식에서는 필요없음

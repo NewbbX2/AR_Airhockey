@@ -29,7 +29,7 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
     public Transform SpawnPoint2;
     public TextMeshProUGUI ScoreText;    // 스코어 표시할 텍스트
     public GameObject PuckPrefab; //스폰할 퍽 프리팹
-    public bool ISpothonConnected = false;
+    public bool ISPothonConnected = false;
     #endregion
 
 

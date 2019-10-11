@@ -40,24 +40,27 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        //멀티 플레이 방식에서는 필요없음 
-        //플레이어 생성
-        //버그 걸림 SpawnPlayer(1); SpawnPlayer(2);
-        //첫 퍽을 스폰.
-        if (PhotonNetwork.IsMasterClient)
+        if (IsPlayingThisGame)
         {
-            ISpothonConnected = true;
-            ScoreText.text = "GAME Start";
-            Debug.Log("GameStart");
-            SpawnNewPuck(0);
-        }
-        else
-        {
-            ISpothonConnected = false;
-            ScoreText.text = " PothonError discon";
-            Debug.Log("err : PothonError discon");
+            //멀티 플레이 방식에서는 필요없음 
+            //플레이어 생성
+            //버그 걸림 SpawnPlayer(1); SpawnPlayer(2);
+            //첫 퍽을 스폰.
+            if (PhotonNetwork.IsMasterClient)
+            {
+                ISPothonConnected = true;
+                ScoreText.text = "GAME Start";
+                Debug.Log("GameStart");
+                SpawnNewPuck(0);
+            }
+            else
+            {
+                ISPothonConnected = false;
+                ScoreText.text = " PothonError discon";
+                Debug.Log("err : PothonError discon");
 
-            SpawnNewPuck(0);
+                SpawnNewPuck(0);
+            }
         }
     }
 
@@ -99,7 +102,7 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
                 return;
         }
 
-        if(ISpothonConnected)
+        if(ISPothonConnected)
         {
 
             //프리팹을 이용하여 인스턴스화

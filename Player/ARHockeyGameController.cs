@@ -47,7 +47,7 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
             //버그 걸림 SpawnPlayer(1); SpawnPlayer(2);
             //첫 퍽을 스폰.
             if (PhotonNetwork.IsMasterClient)
-            {
+            {aa
                 ISPothonConnected = true;
                 ScoreText.text = "GAME Start";
                 Debug.Log("GameStart");

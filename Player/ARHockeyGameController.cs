@@ -21,7 +21,7 @@ using Photon.Realtime;
 /// <summary>
 /// Puck과 Playercharacter, 스코어등 게임 전반적인 내용을 관리합니다.
 /// </summary>
-public class GameController : MonoBehaviourPunCallbacks
+public class ARHockeyGameController : MonoBehaviourPunCallbacks
 {
 
     #region Inspector용 공개 변수
@@ -29,6 +29,7 @@ public class GameController : MonoBehaviourPunCallbacks
     public Transform SpawnPoint2;
     public TextMeshProUGUI ScoreText;    // 스코어 표시할 텍스트
     public GameObject PuckPrefab; //스폰할 퍽 프리팹
+    public bool ISpothonConnected = false;
     #endregion
 
 
@@ -38,23 +39,27 @@ public class GameController : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        ScoreText.text = "GAME Start";
         //멀티 플레이 방식에서는 필요없음 
-        Debug.Log("GameStart");
         //플레이어 생성
         //버그 걸림 SpawnPlayer(1); SpawnPlayer(2);
         //첫 퍽을 스폰.
         if (PhotonNetwork.IsMasterClient)
         {
+            ISpothonConnected = true;
+            ScoreText.text = "GAME Start";
+            Debug.Log("GameStart");
             SpawnNewPuck(0);
-        }        
+        }
+        else
+        {
+            ISpothonConnected = false;
+            ScoreText.text = " PothonError discon";
+            Debug.Log("err : PothonError discon");
+
+            SpawnNewPuck(0);
+        }
     }
 
-    private void Update()
-    {        
-    }
-
-    //멀티 플레이 방식에서는 필요없음
 
     //스코어 표기
     private void SetScoreText()
@@ -93,9 +98,17 @@ public class GameController : MonoBehaviourPunCallbacks
                 return;
         }
 
-        //프리팹을 이용하여 인스턴스화
-        PhotonNetwork.Instantiate(PuckPrefab.name, spawnPoint, Quaternion.identity);
+        if(ISpothonConnected)
+        {
 
+            //프리팹을 이용하여 인스턴스화
+           PhotonNetwork.Instantiate(PuckPrefab.name, spawnPoint, Quaternion.identity);
+        }
+        else
+        {
+            Instantiate(PuckPrefab, spawnPoint, Quaternion.identity);
+
+        }
     }
 
     /// <summary>

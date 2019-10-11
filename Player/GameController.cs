@@ -56,18 +56,6 @@ public class GameController : MonoBehaviourPunCallbacks
 
     //멀티 플레이 방식에서는 필요없음
 
-    //플레이어번호 n인 플레이어 만듬.
-    void SpawnPlayer(int n)
-    {
-
-        GameObject player = new GameObject();
-        player.AddComponent<PlayerCharacter>();
-
-        player.name = "player" + n;
-        player.GetComponent<PlayerCharacter>().playerNo = n;
-
-    }
-
     //스코어 표기
     private void SetScoreText()
     {
@@ -92,11 +80,11 @@ public class GameController : MonoBehaviourPunCallbacks
         Vector3 spawnPoint = Vector3.zero;
         switch (spawnTeamNum)
         {
-            case 1:
+            case 0:
                 spawnPoint = SpawnPoint1.position;
                 break;
 
-            case 2:
+            case 1:
                 spawnPoint = SpawnPoint2.position;
                 break;
 

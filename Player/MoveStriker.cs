@@ -63,6 +63,14 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (!photonView.IsMine)
         {
+            if ((transform.position - currentPos).sqrMagnitude >= 10.0f * 10.0f)
+            {
+                transform.position = currentPos;
+            }
+            else
+            {
+                transform.position = Vector3.Lerp(transform.position, currentPos, Time.deltaTime * 10.0f);
+            }
             return;
         }
 #if UNITY_EDITOR || MOUSE
@@ -116,18 +124,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
 
     private IEnumerator TouchStick() //하키 채 움직이기
     {
-        if ((transform.position - currentPos).sqrMagnitude <= 10.0f * 10.0f)
-        {
-            transform.position = currentPos;
-        }
-        else
-        {
-            StrikerRigidbody.velocity = (StickDestination - transform.position).normalized * stickSpeed;
-        }
-
-
-
-
+        StrikerRigidbody.velocity = (StickDestination - transform.position).normalized * stickSpeed;                          
 
         /*인전 움직이는 부분
         transform.position = Vector3.MoveTowards(transform.position, StickDestination, MoveSpeed * Time.deltaTime);

@@ -12,16 +12,17 @@ public class HockeyStriker : MonoBehaviour
     private Rigidbody StrikerRigidbody;
 
 
-    public ARHockeyGameController GameController;
+//수정사항
+    private ARHockeyGameController GameController;
     private GameObject hockeyBoard;
 
     //시작세팅
     void Start()
     {
-
-        StrikerRigidbody = GetComponent<Rigidbody>();
         GameController = GameObject.Find("GameController").GetComponent<ARHockeyGameController>();
         hockeyBoard = GameController.hockeyBoard;
+//수정끝
+        StrikerRigidbody = GetComponent<Rigidbody>();
     }
     public Vector3 StickMoveBall()
     {

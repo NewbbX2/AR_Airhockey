@@ -3,52 +3,39 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-
 public class HockeyStriker : MonoBehaviour
 {
     //유저번호
     [Range(1, 2)] public int UserNo = 1;
     //스틱 이동방향
     Vector3 movementVectorToAffectBall = new Vector3(0, 0, 0);
-
-    //보드 오브젝트
-    GameObject hockeyBoard;
-
     private Rigidbody StrikerRigidbody;
 
+
+    public ARHockeyGameController GameController;
+    private GameObject hockeyBoard;
 
     //시작세팅
     void Start()
     {
-        hockeyBoard = GameObject.FindGameObjectWithTag("Table");
+
         StrikerRigidbody = GetComponent<Rigidbody>();
-        //네트워크에서는 필요없음
-        /*
-        //Striker 태그와 배열 index로 특정짓기
-        HockeyStickObjectSelf = GameObject.FindGameObjectsWithTag("Striker")[HockeyStickUserNo - 1];
-        */
+        GameController = GameObject.Find("GameController").GetComponent<ARHockeyGameController>();
+        hockeyBoard = GameController.hockeyBoard;
     }
-
-
-
-
     public Vector3 StickMoveBall()
     {
         return movementVectorToAffectBall;
     }
-
     DateTime T_Now;
     DateTime T_Past;
     bool checkisStickMovedNow = false;
     void Update()
     {
-
         T_Past = T_Now;
         T_Now = DateTime.Now;
         Loc_Past = Loc_Now;
         Loc_Now = transform.position;
-
-
         if (Loc_Now == Loc_Past)
         {
             checkisStickMovedNow = false;
@@ -57,7 +44,6 @@ public class HockeyStriker : MonoBehaviour
         {
             checkisStickMovedNow = true;
         }
-
         //움직였을경우 현재속도 측정.
         if (checkisStickMovedNow)
         {
@@ -80,21 +66,15 @@ public class HockeyStriker : MonoBehaviour
                 movementVectorToAffectBall *= 0.99f;
             }
         }
-
     }
-
-
     Vector3 Loc_Now = new Vector3(0, 0, 0);
     Vector3 Loc_Past = new Vector3(0, 0, 0);
-
-
     void calculateSitckSpeedAndDirecWithNoMove()
     {
         //스틱 조작후 속도 빛 방향=
         //일단 고정된 스틱인경우의 공이 부딫칠때, 공의 이동방향 및 속도.
-        movementVectorToAffectBall = GameObject.Find("Puck").GetComponent<Puck>().Movement;
+        movementVectorToAffectBall = GameController.Puck.Movement;
         movementVectorToAffectBall.z *= -1;
-
     }
     //스틱 이동불가 지역 판정
     void stickCannotMoveThere()
@@ -106,7 +86,6 @@ public class HockeyStriker : MonoBehaviour
             if (transform.position.z > 0)
             {
                 transform.position = new Vector3(transform.position.x, transform.position.y, 0);
-
             }
             //스틱위치:테이블 아래일시
             //스틱위치:테이블위일시.
@@ -114,7 +93,6 @@ public class HockeyStriker : MonoBehaviour
             {
                 transform.position = new Vector3(transform.position.x, transform.position.y, -hockeyBoard.transform.localScale.z / 2);
             }
-
         }
         //홀수팀(위)가 
         else if (UserNo % 2 == 1)
@@ -141,10 +119,4 @@ public class HockeyStriker : MonoBehaviour
             transform.position = new Vector3(hockeyBoard.transform.localScale.x / 2, transform.position.y, transform.position.z);
         }
     }
-
-
-
-
-
-
 }

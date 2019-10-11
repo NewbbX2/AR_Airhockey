@@ -21,12 +21,12 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
     [System.NonSerialized] public Vector3 Movement;
     [System.NonSerialized] public Rigidbody _Rigidbody;
 
-    private GameController _GameController;
+    private ARHockeyGameController gameController;
 
     //공 초기세팅.x, z축회전막아서 평면회전시킴.
     private void Start()
     {
-        _GameController = FindObjectOfType<GameController>();
+        gameController = FindObjectOfType<ARHockeyGameController>();
 
         _Rigidbody = GetComponent<Rigidbody>();
     }
@@ -64,8 +64,8 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
         }
         if (hitObject.tag == "Striker")
         {
-            HockeyStriker hockeyStickInfor = hitObject.GetComponent<HockeyStriker>();
-            vec3 = hockeyStickInfor.StickMoveBall() * 10f; //이정도 값을 해야 좀 속도가 났음
+            HockeyStriker hockeyStrikerInfor = hitObject.GetComponent<HockeyStriker>();
+            vec3 = hockeyStrikerInfor.StrikerMoveBall() * 10f; //이정도 값을 해야 좀 속도가 났음
             _Rigidbody.AddForce(vec3);
         }
     }
@@ -81,14 +81,14 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
                 switch (trigger.GetComponent<GoalInf>().TeamNo)
                 {
                     case 0:
-                        _GameController.ScoreUp(1);
-                        _GameController.SpawnNewPuck(0);
+                        gameController.ScoreUp(1);
+                        gameController.SpawnNewPuck(0);
                         Destroy(gameObject);
                         break;
 
                     case 1:
-                        _GameController.ScoreUp(0);
-                        _GameController.SpawnNewPuck(1);
+                        gameController.ScoreUp(0);
+                        gameController.SpawnNewPuck(1);
                         Destroy(gameObject);
                         break;
 

@@ -1,4 +1,4 @@
-﻿#define MOUSE
+#define MOUSE
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,10 +20,14 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
     public float PokeForce = 5.0f;//찌르는 듯한 물리효과의 강도
     public float MoveSpeed = 20.0f; // 이동속도
     public GameObject MiddlePoint; //경기장 중앙 지점
-    [Range(0,1)]public int Controller;
+    [Range(0, 1)] public int Controller;
     #endregion
 
     #region 내부 변수
+
+    private float stickSpeed = 10.0f;
+
+
     private Vector2 TouchPos;//터치된 위치
     private Vector3 TouchVector;//Ray쏠 방향
     private RaycastHit RayHit;
@@ -59,26 +63,13 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (!photonView.IsMine)
         {
-            if ((transform.position - currentPos).sqrMagnitude >= 10.0f * 10.0f)
-            {
-                transform.position = currentPos;
-                transform.rotation = currentRot;
-            }
-            else
-            {
-                transform.position = Vector3.Lerp(transform.position, currentPos, Time.deltaTime * 10.0f);
-                transform.rotation = Quaternion.Slerp(transform.rotation, currentRot, Time.deltaTime * 10.0f);
-            }
-            //Debug.Log("is Not Mine");
             return;
         }
 #if UNITY_EDITOR || MOUSE
         if (!Input.GetMouseButton(0) || (int)PlayerNum != Controller)
         {
-            //Debug.Log("Player Num = " + PlayerNum);
             return;
         }
-        //Debug.Log("Mouse Mode");
 #else
         if (Input.touchCount == 0)
         {
@@ -103,30 +94,41 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
         {
             if (RayHit.collider.tag == "Table")
             {
-                
+
                 MaxZ = RayHit.point.z;
-                /*
-                if (MaxZ >= MiddlePointZ) //하키가 중앙선 못넘게
+                 
+                if ( (PlayerNum == PlayerNumber.Player1) && MaxZ >= MiddlePointZ) //하키가 중앙선 못넘게
                 {
                     MaxZ = MiddlePointZ;
                 } 
-                */
+                else if((PlayerNum == PlayerNumber.Player2) && MaxZ <= MiddlePointZ)
+                {
+                    MaxZ = MiddlePointZ;
+                }
+
                 StickDestination = new Vector3(RayHit.point.x, RayHit.point.y + 0.05f, MaxZ);//테이블 바닥에 닿으면 위치 정보 저장
-                //Debug.Log(StickDestination);
             }
-            else if (RayHit.collider.tag == "Puck")
+            else
             {
-                //퍽에 닿으면 퍽에 poke
-                //RayHit.rigidbody.AddForceAtPosition(TouchRay.direction * PokeForce, RayHit.point);
             }
-            //Debug.Log(StickDestination);
         }
-        //yield return new WaitForSeconds(0.1f); //0.1초마다 호출
     }
 
     private IEnumerator TouchStick() //하키 채 움직이기
     {
-        StrikerRigidbody.velocity = StickDestination - transform.position ;
+        if ((transform.position - currentPos).sqrMagnitude <= 10.0f * 10.0f)
+        {
+            transform.position = currentPos;
+        }
+        else
+        {
+            StrikerRigidbody.velocity = (StickDestination - transform.position).normalized * stickSpeed;
+        }
+
+
+
+
+
         /*인전 움직이는 부분
         transform.position = Vector3.MoveTowards(transform.position, StickDestination, MoveSpeed * Time.deltaTime);
         _Rigidbody.AddForce(transform.position - StickDestination);
@@ -136,18 +138,15 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
 
     #region 포톤뷰 통신부분
     private Vector3 currentPos;
-    private Quaternion currentRot;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
             stream.SendNext(transform.position);
-            stream.SendNext(transform.rotation);
         }
         else
         {
             currentPos = (Vector3)stream.ReceiveNext();
-            currentRot = (Quaternion)stream.ReceiveNext();
         }
     }
     #endregion

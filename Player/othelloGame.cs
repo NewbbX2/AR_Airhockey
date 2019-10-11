@@ -9,7 +9,7 @@ public class OthelloGame : MonoBehaviour
 {
 
     const int MaxR = 8; const int MaxL = 8;
-    int[,] othelloBoard = new int[MaxR, MaxL];
+    public int[,] othelloBoard = new int[MaxR, MaxL];
     int[] score = new int[2];
     int turn = 0;
     bool playtingTurn = false;

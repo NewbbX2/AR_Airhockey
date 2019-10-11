@@ -8,7 +8,7 @@ public class OthelloOutput : MonoBehaviour
     GameObject othelloBoardOBJECT = GameObject.Find("OthelloBoardObj");
     GameObject othelloStone = GameObject.Find("othelloStoneObjExam");
 
-    GameObject[,] Stone;
+    public GameObject[,] Stone;
     int[,] othelloBoardDataBoard = new int[8, 8];
     OthelloGame OGD;
     void Start()

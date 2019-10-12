@@ -30,9 +30,10 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
     public TextMeshProUGUI ScoreText;    // 스코어 표시할 텍스트
     public GameObject PuckPrefab; //스폰할 퍽 프리팹
     public GameObject HockeyTable; // 하키 테이블
+    [System.NonSerialized] public GameObject[] Goal;
     public bool IsPhotonConnected = false;
-    [System.NonSerialized]public GameObject Puck;
-    [System.NonSerialized]public GameObject[] StrikerList;
+    [System.NonSerialized] public GameObject Puck;
+    [System.NonSerialized] public GameObject[] StrikerList;
     #endregion
 
 
@@ -43,7 +44,15 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
 
     void Start()
     {
+        HockeyTable = GameObject.FindGameObjectWithTag("Board");
         StrikerList = GameObject.FindGameObjectsWithTag("Striker");
+        Goal = GameObject.FindGameObjectsWithTag("Goal");
+       if(Goal[0].GetComponent<GoalInf>().TeamNo==1 && Goal[1].GetComponent<GoalInf>().TeamNo==0)
+        {
+            GameObject tempobj = Goal[0];
+            Goal[0] = Goal[1];
+            Goal[1] = tempobj;
+        }
         //첫 퍽을 스폰.
         if (PhotonNetwork.IsMasterClient)
         {
@@ -102,7 +111,7 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
         //프리팹을 이용하여 인스턴스화
         if (IsPhotonConnected)
         {
-            if(PhotonNetwork.IsMasterClient)
+            if (PhotonNetwork.IsMasterClient)
                 PhotonNetwork.InstantiateSceneObject(PuckPrefab.name, spawnPoint, Quaternion.identity);
         }
         else

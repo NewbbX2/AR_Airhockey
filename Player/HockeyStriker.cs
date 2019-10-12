@@ -12,25 +12,25 @@ public class HockeyStriker : MonoBehaviour
     private Rigidbody StrikerRigidbody;
 
 
-//수정사항
-    private ARHockeyGameController GameController;
+    //수정사항
+    private ARHockeyGameController gameController;
     private GameObject hockeyBoard;
 
     //시작세팅
     void Start()
     {
-        GameController = GameObject.Find("GameController").GetComponent<ARHockeyGameController>();
-        hockeyBoard = GameController.hockeyBoard;
-//수정끝
+        gameController = FindObjectOfType<ARHockeyGameController>();
+        hockeyBoard = gameController.hockeyBoardOBJ;
+        //수정끝
         StrikerRigidbody = GetComponent<Rigidbody>();
     }
-    public Vector3 StickMoveBall()
+    public Vector3 StrikerMoveBall()
     {
         return movementVectorToAffectBall;
     }
     DateTime T_Now;
     DateTime T_Past;
-    bool checkisStickMovedNow = false;
+    bool checkisStrikerMovedNow = false;
     void Update()
     {
         T_Past = T_Now;
@@ -39,14 +39,14 @@ public class HockeyStriker : MonoBehaviour
         Loc_Now = transform.position;
         if (Loc_Now == Loc_Past)
         {
-            checkisStickMovedNow = false;
+            checkisStrikerMovedNow = false;
         }
         else
         {
-            checkisStickMovedNow = true;
+            checkisStrikerMovedNow = true;
         }
         //움직였을경우 현재속도 측정.
-        if (checkisStickMovedNow)
+        if (checkisStrikerMovedNow)
         {
             TimeSpan TS = T_Now - T_Past;
             //movementVectorToAffectBall = (Loc_Now - Loc_Past) / TS.Seconds;
@@ -74,11 +74,11 @@ public class HockeyStriker : MonoBehaviour
     {
         //스틱 조작후 속도 빛 방향=
         //일단 고정된 스틱인경우의 공이 부딫칠때, 공의 이동방향 및 속도.
-        movementVectorToAffectBall = GameController.Puck.Movement;
+        movementVectorToAffectBall = gameController.PuckOBJ.GetComponent<Puck>().Movement;
         movementVectorToAffectBall.z *= -1;
     }
     //스틱 이동불가 지역 판정
-    void stickCannotMoveThere()
+    void strikerCannotMoveThere()
     {
         //짝수팀(아래)가
         if (UserNo % 2 == 0)

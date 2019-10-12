@@ -16,6 +16,7 @@ using Photon.Realtime;
 //1p의 점수는 score[0] 2p 는 score[1]
 
 //Board, Puck, Goal tag 필요
+//Prefab가 전부 만들어진 경우, /**/방식의 주석을 전부 해제하고, 그 이전에 지우라고 한 코드를 지우면된다.
 
 /// <summary>
 /// Puck과 Playercharacter, 스코어등 게임 전반적인 내용을 관리합니다.
@@ -30,10 +31,15 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
     public GameObject PuckPrefab; //스폰할 퍽 프리팹
     public bool ISPothonConnected = false;
     public bool IsPlayingThisGame = true;
+    public GameObject hockeyBoardOBJ;
+    public GameObject PuckOBJ;
+    public GameObject[] StrikerOBJ;
+    public float height = 0.3f;
     #endregion
 
 
 
+    //보드 오브젝트
     //점수
     private int[] Score = new int[2];
 
@@ -41,6 +47,14 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
     {
         if (IsPlayingThisGame)
         {
+            hockeyBoardOBJ = GameObject.FindGameObjectWithTag("Board");
+            StrikerOBJ = GameObject.FindGameObjectsWithTag("Striker");
+            height += hockeyBoardOBJ.transform.position.y;
+            SpawnPoint1.position += new Vector3(0,  height- SpawnPoint1.position.y, 0);
+            SpawnPoint2.position += new Vector3(0, +height - SpawnPoint1.position.y, 0);
+
+
+
             //멀티 플레이 방식에서는 필요없음 
             //플레이어 생성
             //버그 걸림 SpawnPlayer(1); SpawnPlayer(2);
@@ -62,7 +76,6 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
             }
         }
     }
-
 
     //스코어 표기
     private void SetScoreText()
@@ -109,7 +122,7 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
         }
         else
         {
-            Instantiate(PuckPrefab, spawnPoint, Quaternion.identity);
+            PuckOBJ=Instantiate(PuckPrefab, spawnPoint, Quaternion.identity);
 
         }
     }

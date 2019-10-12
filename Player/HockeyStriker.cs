@@ -6,22 +6,17 @@ using UnityEngine.UI;
 public class HockeyStriker : MonoBehaviour
 {
     //유저번호
-    [Range(1, 2)] public int UserNo = 1;
-    //스틱 이동방향
-    Vector3 movementVectorToAffectBall = new Vector3(0, 0, 0);
+    [Range(1, 2)] public int UserNo = 1;    
+    Vector3 movementVectorToAffectBall = new Vector3(0, 0, 0);//스틱 이동방향
     private Rigidbody StrikerRigidbody;
-
-
-//수정사항
     private ARHockeyGameController GameController;
     private GameObject HockeyTable;
 
     //시작세팅
     void Start()
     {
-        GameController = GameObject.Find("GameController").GetComponent<ARHockeyGameController>();
+        GameController = FindObjectOfType<ARHockeyGameController>();
         HockeyTable = GameController.HockeyTable;
-//수정끝
         StrikerRigidbody = GetComponent<Rigidbody>();
     }
     public Vector3 StrikerMoveBall()
@@ -30,7 +25,7 @@ public class HockeyStriker : MonoBehaviour
     }
     DateTime T_Now;
     DateTime T_Past;
-    bool checkisStickMovedNow = false;
+    bool checkisStrikerMovedNow = false;
     void Update()
     {
         T_Past = T_Now;
@@ -39,14 +34,14 @@ public class HockeyStriker : MonoBehaviour
         Loc_Now = transform.position;
         if (Loc_Now == Loc_Past)
         {
-            checkisStickMovedNow = false;
+            checkisStrikerMovedNow = false;
         }
         else
         {
-            checkisStickMovedNow = true;
+            checkisStrikerMovedNow = true;
         }
         //움직였을경우 현재속도 측정.
-        if (checkisStickMovedNow)
+        if (checkisStrikerMovedNow)
         {
             TimeSpan TS = T_Now - T_Past;
             //movementVectorToAffectBall = (Loc_Now - Loc_Past) / TS.Seconds;
@@ -74,13 +69,12 @@ public class HockeyStriker : MonoBehaviour
     {
         //스틱 조작후 속도 빛 방향=
         //일단 고정된 스틱인경우의 공이 부딫칠때, 공의 이동방향 및 속도.
-        
-        //이 아래 부분 뭔지 모르겠는데 수정해주세요.
-       //movementVectorToAffectBall = GameController.Puck.Movement;
-       //movementVectorToAffectBall.z *= -1;
+
+        movementVectorToAffectBall = GameController.Puck.GetComponent<Puck>().Movement;
+        movementVectorToAffectBall.z *= -1;
     }
     //스틱 이동불가 지역 판정
-    void stickCannotMoveThere()
+    void strikerCannotMoveThere()
     {
         //짝수팀(아래)가
         if (UserNo % 2 == 0)

@@ -19,9 +19,9 @@ public class PlayerCharacter : MonoBehaviour
     public int playerNo = 0;
 
     //점수관리때문에 게임다시 가져옴.
-    //ARHockeyGameController _GameController;
+    ARHockeyGameController GameController;
     //보드위치 확인용.
-    GameObject hockeyBoard;
+    GameObject HockeyTable;
 
     //해당 플레이어의 Puck
     public GameObject StickObject;
@@ -29,26 +29,43 @@ public class PlayerCharacter : MonoBehaviour
 
     void Start()
     {
-        //_GameController = FindObjectOfType<ARHockeyGameController>();
-        hockeyBoard = GameObject.FindGameObjectWithTag("Board");
-
-        //SJ. 세팅하고 세팅한 오브젝트 설치
-        StickStartSetting();
-        Instantiate(StickObject, hockeyBoard.transform.position + new Vector3(0f, 0.5f, -5f), Quaternion.identity);
+        HockeyTable = GameObject.FindGameObjectWithTag("Board");
+        GameController = FindObjectOfType<ARHockeyGameController>();
+        HockeyTable = GameController.HockeyTable;
+        StrikerStartSetting();
+        Instantiate(StickObject, HockeyTable.transform.position + new Vector3(0f, 0f, -5f), Quaternion.identity);
     }
 
 
     //SJ. 하키스틱 설정
     public void StickStartSetting()
     {
-        StickObject = GameObject.FindGameObjectsWithTag("Puck")[playerNo - 1];
-        StickObject.name = "HockeyPuck";
+        StickObject = GameController.StrikerList[playerNo - 1];
+        StickObject.name = "HockeyStriker";
         StickObject.transform.localScale = new Vector3(1f, 0.5f, 0.1f);
         StickObject.AddComponent<HockeyStriker>();
         StickObject.GetComponent<HockeyStriker>().UserNo = playerNo;
     }
 
 
+    //하키스틱 찾은뒤 배치.
+    public void StrikerStartSetting()
+    {
+        StickObject = GameObject.FindGameObjectsWithTag("Striker")[playerNo - 1];
+        StickObject.name = "Striker" + playerNo;
+        if (playerNo == 1)
+        {
+            StickObject.transform.localScale = new Vector3(1f, 0.5f, 0.1f);
+        }
+        else if (playerNo == 2)
+        {
+            StickObject.transform.localScale = new Vector3(1f, 0.5f, 0.1f);
+        }
+
+        StickObject.AddComponent<HockeyStriker>();
+        StickObject.GetComponent<HockeyStriker>().UserNo = playerNo;
+        StickObject.GetComponent<HockeyStriker>().UserNo = playerNo;
+    }
 
 
 

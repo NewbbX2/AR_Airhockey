@@ -14,17 +14,17 @@ public class HockeyStriker : MonoBehaviour
 
 //수정사항
     private ARHockeyGameController GameController;
-    private GameObject hockeyBoard;
+    private GameObject HockeyTable;
 
     //시작세팅
     void Start()
     {
         GameController = GameObject.Find("GameController").GetComponent<ARHockeyGameController>();
-        hockeyBoard = GameController.hockeyBoard;
+        HockeyTable = GameController.HockeyTable;
 //수정끝
         StrikerRigidbody = GetComponent<Rigidbody>();
     }
-    public Vector3 StickMoveBall()
+    public Vector3 StrikerMoveBall()
     {
         return movementVectorToAffectBall;
     }
@@ -74,8 +74,10 @@ public class HockeyStriker : MonoBehaviour
     {
         //스틱 조작후 속도 빛 방향=
         //일단 고정된 스틱인경우의 공이 부딫칠때, 공의 이동방향 및 속도.
-        movementVectorToAffectBall = GameController.Puck.Movement;
-        movementVectorToAffectBall.z *= -1;
+        
+        //이 아래 부분 뭔지 모르겠는데 수정해주세요.
+       //movementVectorToAffectBall = GameController.Puck.Movement;
+       //movementVectorToAffectBall.z *= -1;
     }
     //스틱 이동불가 지역 판정
     void stickCannotMoveThere()
@@ -90,9 +92,9 @@ public class HockeyStriker : MonoBehaviour
             }
             //스틱위치:테이블 아래일시
             //스틱위치:테이블위일시.
-            else if (transform.position.z < hockeyBoard.transform.localScale.z)
+            else if (transform.position.z < HockeyTable.transform.localScale.z)
             {
-                transform.position = new Vector3(transform.position.x, transform.position.y, -hockeyBoard.transform.localScale.z / 2);
+                transform.position = new Vector3(transform.position.x, transform.position.y, -HockeyTable.transform.localScale.z / 2);
             }
         }
         //홀수팀(위)가 
@@ -104,20 +106,20 @@ public class HockeyStriker : MonoBehaviour
                 transform.position = new Vector3(transform.position.x, transform.position.y, 0);
             }
             //스틱위치:테이블위일시.
-            else if (transform.position.z > hockeyBoard.transform.localScale.z)
+            else if (transform.position.z > HockeyTable.transform.localScale.z)
             {
-                transform.position = new Vector3(transform.position.x, transform.position.y, hockeyBoard.transform.localScale.z / 2);
+                transform.position = new Vector3(transform.position.x, transform.position.y, HockeyTable.transform.localScale.z / 2);
             }
         }
         //좌우로 벗어난 경우, 테이블 끝으로 가져옴.
         //벽이 어떤식인지 몰라서 일단 좌우로 나눔.
-        if (transform.position.x > hockeyBoard.transform.localScale.x / 2)
+        if (transform.position.x > HockeyTable.transform.localScale.x / 2)
         {
-            transform.position = new Vector3(hockeyBoard.transform.localScale.x / 2, transform.position.y, transform.position.z);
+            transform.position = new Vector3(HockeyTable.transform.localScale.x / 2, transform.position.y, transform.position.z);
         }
-        else if (transform.position.x < -hockeyBoard.transform.localScale.x / 2)
+        else if (transform.position.x < -HockeyTable.transform.localScale.x / 2)
         {
-            transform.position = new Vector3(hockeyBoard.transform.localScale.x / 2, transform.position.y, transform.position.z);
+            transform.position = new Vector3(HockeyTable.transform.localScale.x / 2, transform.position.y, transform.position.z);
         }
     }
 }

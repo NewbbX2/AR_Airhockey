@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+//using UnityEngine.UI;
 public class PlayerCharacter : MonoBehaviour
 {
 
@@ -19,7 +19,7 @@ public class PlayerCharacter : MonoBehaviour
     public int playerNo = 0;
 
     //점수관리때문에 게임다시 가져옴.
-    GameController _GameController;
+    //ARHockeyGameController _GameController;
     //보드위치 확인용.
     GameObject hockeyBoard;
 
@@ -29,7 +29,7 @@ public class PlayerCharacter : MonoBehaviour
 
     void Start()
     {
-        _GameController = FindObjectOfType<GameController>();
+        //_GameController = FindObjectOfType<ARHockeyGameController>();
         hockeyBoard = GameObject.FindGameObjectWithTag("Board");
 
         //SJ. 세팅하고 세팅한 오브젝트 설치

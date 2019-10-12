@@ -20,6 +20,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
     public float PokeForce = 5.0f;//찌르는 듯한 물리효과의 강도
     public float MoveSpeed = 20.0f; // 이동속도
     public GameObject MiddlePoint; //경기장 중앙 지점
+   
     [Range(0, 1)] public int Controller;
     #endregion
 
@@ -31,7 +32,6 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
     private Vector2 TouchPos;//터치된 위치
     private Vector3 TouchVector;//Ray쏠 방향
     private RaycastHit RayHit;
-    private GameObject HockeyBoard;
     private Vector3 StickDestination;
     private float MaxZ;
     private float MiddlePointZ; //경기장 중앙 지점의 Z좌표값

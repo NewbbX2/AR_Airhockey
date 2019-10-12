@@ -19,7 +19,7 @@ public class PlayerCharacter : MonoBehaviour
     public int playerNo = 0;
 
     //점수관리때문에 게임다시 가져옴.
-    GameController _GameController;
+    ARHockeyGameController gameController;
     //보드위치 확인용.
     GameObject hockeyBoard;
 
@@ -29,26 +29,45 @@ public class PlayerCharacter : MonoBehaviour
 
     void Start()
     {
-        _GameController = FindObjectOfType<GameController>();
-        hockeyBoard = GameObject.FindGameObjectWithTag("Board");
+        gameController = FindObjectOfType<ARHockeyGameController>();
+        hockeyBoard = gameController.hockeyBoardOBJ;
+        StrikerStartSetting();
 
         //SJ. 세팅하고 세팅한 오브젝트 설치
         StickStartSetting();
-        Instantiate(StickObject, hockeyBoard.transform.position + new Vector3(0f, 0.5f, -5f), Quaternion.identity);
+        Instantiate(StickObject, hockeyBoard.transform.position + new Vector3(0f, 0f, -5f), Quaternion.identity);
     }
 
 
     //SJ. 하키스틱 설정
     public void StickStartSetting()
     {
-        StickObject = GameObject.FindGameObjectsWithTag("Puck")[playerNo - 1];
-        StickObject.name = "HockeyPuck";
+        StickObject = gameController.StrikerOBJ[playerNo - 1];
+        StickObject.name = "HockeyStriker";
         StickObject.transform.localScale = new Vector3(1f, 0.5f, 0.1f);
         StickObject.AddComponent<HockeyStriker>();
         StickObject.GetComponent<HockeyStriker>().UserNo = playerNo;
     }
 
 
+    //하키스틱 찾은뒤 배치.
+    public void StrikerStartSetting()
+    {
+        StickObject = GameObject.FindGameObjectsWithTag("Striker")[playerNo - 1];
+        StickObject.name = "Striker" + playerNo;
+        if (playerNo == 1)
+        {
+            StickObject.transform.localScale = new Vector3(1f, 0.5f, 0.1f);
+        }
+        else if (playerNo == 2)
+        {
+            StickObject.transform.localScale = new Vector3(1f, 0.5f, 0.1f);
+        }
+
+        StickObject.AddComponent<HockeyStriker>();
+        StickObject.GetComponent<HockeyStriker>().UserNo = playerNo;
+        StickObject.GetComponent<HockeyStriker>().UserNo = playerNo;
+    }
 
 
 

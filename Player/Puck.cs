@@ -21,13 +21,12 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
     [System.NonSerialized] public Vector3 Movement;
     [System.NonSerialized] public Rigidbody _Rigidbody;
 
-    private ARHockeyGameController gameController;
+    private ARHockeyGameController GameController;
 
-    //공 초기세팅.x, z축회전막아서 평면회전시킴.
+
     private void Start()
     {
-        gameController = FindObjectOfType<ARHockeyGameController>();
-
+        GameController = FindObjectOfType<ARHockeyGameController>();
         _Rigidbody = GetComponent<Rigidbody>();
     }
 
@@ -35,11 +34,7 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
     //매번 볼동작시킴.
     void Update()
     {
-        //y 축값 고정
-        gameController.ScoreText.text = transform.position+ "G1234";
-        Debug.Log("err : PothonError ddd");
-
-        if (!photonView.IsMine)
+        if (!photonView.IsMine && GameController.IsPhotonConnected)
         {
 
             if ((transform.position - currentPos).sqrMagnitude >= 10.0f * 10.0f)
@@ -87,14 +82,14 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
                 switch (trigger.GetComponent<GoalInf>().TeamNo)
                 {
                     case 0:
-                        gameController.ScoreUp(1);
-                        gameController.SpawnNewPuck(0);
+                        GameController.ScoreUp(1);
+                        GameController.SpawnNewPuck(0);
                         Destroy(gameObject);
                         break;
 
                     case 1:
-                        gameController.ScoreUp(0);
-                        gameController.SpawnNewPuck(1);
+                        GameController.ScoreUp(0);
+                        GameController.SpawnNewPuck(1);
                         Destroy(gameObject);
                         break;
 

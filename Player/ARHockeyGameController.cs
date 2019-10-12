@@ -30,8 +30,7 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
     public TextMeshProUGUI ScoreText;    // 스코어 표시할 텍스트
     public GameObject PuckPrefab; //스폰할 퍽 프리팹
     public GameObject HockeyTable; // 하키 테이블
-    public bool ISPothonConnected = false;
-    public bool IsPlayingThisGame = true;
+    public bool IsPhotonConnected = false;
     [System.NonSerialized]public GameObject Puck;
     [System.NonSerialized]public GameObject[] StrikerList;
     #endregion
@@ -44,26 +43,23 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        if (IsPlayingThisGame)
+        StrikerList = GameObject.FindGameObjectsWithTag("Striker");
+        //첫 퍽을 스폰.
+        if (PhotonNetwork.IsMasterClient)
         {
-            StrikerList = GameObject.FindGameObjectsWithTag("Striker");
-            //첫 퍽을 스폰.
-            if (PhotonNetwork.IsMasterClient)
-            {
-                ISPothonConnected = true;
-                ScoreText.text = "GAME Start";
-                Debug.Log("GameStart");
-                SpawnNewPuck(0);
-            }
-            else
-            {
-                ISPothonConnected = false;
-                ScoreText.text = " PothonError discon";
-                Debug.Log("err : PothonError discon");
-
-                SpawnNewPuck(0);
-            }
+            IsPhotonConnected = true;
+            ScoreText.text = "GAME Start";
+            Debug.Log("GameStart");
+            SpawnNewPuck(0);
         }
+        else
+        {
+            IsPhotonConnected = false;
+            ScoreText.text = " PothonError discon";
+            Debug.Log("err : PothonError discon");
+            SpawnNewPuck(0);
+        }
+
     }
 
     //스코어 표기
@@ -104,7 +100,7 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
         }
 
         //프리팹을 이용하여 인스턴스화
-        if (ISPothonConnected)
+        if (IsPhotonConnected)
         {
             if(PhotonNetwork.IsMasterClient)
                 PhotonNetwork.InstantiateSceneObject(PuckPrefab.name, spawnPoint, Quaternion.identity);

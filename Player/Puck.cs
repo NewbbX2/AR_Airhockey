@@ -35,8 +35,15 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
     //매번 볼동작시킴.
     void Update()
     {
+        //y 축값 고정.
+        transform.position += new Vector3(0,gameController.height - transform.position.y,0);
+
+        gameController.ScoreText.text = transform.position+ "G1234";
+        Debug.Log("err : PothonError ddd");
+
         if (!photonView.IsMine)
         {
+
             if ((transform.position - currentPos).sqrMagnitude >= 10.0f * 10.0f)
             {
                 transform.position = currentPos;
@@ -60,7 +67,8 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
         if (hitObject.name == "Wall_Left" || hitObject.name == "Wall_Right")
         {
             Vector3 CurrentVelocity = _Rigidbody.velocity;
-            CurrentVelocity.x *= -1;
+            CurrentVelocity.x *= -0.95f;
+
         }
         if (hitObject.tag == "Striker")
         {

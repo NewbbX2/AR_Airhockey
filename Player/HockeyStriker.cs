@@ -81,7 +81,7 @@ public class HockeyStriker : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, new Vector3(0, 1, 0), out hit, 1000000))
         {
-            if (hit.transform.CompareTag("Table"))
+            if (hit.transform.CompareTag("Board"))
             {
                 return;
             }
@@ -89,7 +89,7 @@ public class HockeyStriker : MonoBehaviour
         }
         if (Physics.Raycast(transform.position, new Vector3(0, -1, 0), out hit, 1000000))
         {
-            if (hit.transform.CompareTag("Table"))
+            if (hit.transform.CompareTag("Board"))
             {
                 return;
             }

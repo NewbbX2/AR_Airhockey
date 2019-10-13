@@ -95,7 +95,7 @@ public class HockeyStriker : MonoBehaviour
             }
 
         }
-        transform.position = new Vector3(0, 0, 0);
+        transform.position = new Vector3(0, transform.position.y, 0);
 
     }
 

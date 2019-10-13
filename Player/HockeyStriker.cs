@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class HockeyStriker : MonoBehaviour
 {
     //유저번호
-    [Range(1, 2)] public int UserNo = 1;    
+    [Range(1, 2)] public int UserNo = 1;
     Vector3 movementVectorToAffectBall = new Vector3(0, 0, 0);//스틱 이동방향
     private Rigidbody StrikerRigidbody;
     private ARHockeyGameController GameController;
@@ -15,7 +15,7 @@ public class HockeyStriker : MonoBehaviour
     //시작세팅
     void Start()
     {
-        GameController = FindObjectOfType<ARHockeyGameController>();
+        GameController = GameObject.Find("GameController").GetComponent<ARHockeyGameController>();
         HockeyTable = GameController.HockeyTable;
         StrikerRigidbody = GetComponent<Rigidbody>();
     }
@@ -76,35 +76,27 @@ public class HockeyStriker : MonoBehaviour
     //스틱 이동불가 지역 판정
     void strikerCannotMoveThere()
     {
-        //짝수팀(아래)가
+        float zDistanceToGoal0 = Mathf.Abs(GameController.Goal[0].transform.position.z - transform.position.z);
+
+        float zDistanceToGoal1 = Mathf.Abs(GameController.Goal[1].transform.position.z - transform.position.z);
+
+        //짝수팀이 
         if (UserNo % 2 == 0)
         {
-            //스틱위치:테이블 절반이상일시.
-            if (transform.position.z > 0)
+            //홀수팀골대쪽에 퍽가져가면
+            if (zDistanceToGoal0<zDistanceToGoal1)
             {
-                transform.position = new Vector3(transform.position.x, transform.position.y, 0);
-            }
-            //스틱위치:테이블 아래일시
-            //스틱위치:테이블위일시.
-            else if (transform.position.z < HockeyTable.transform.localScale.z)
-            {
-                transform.position = new Vector3(transform.position.x, transform.position.y, -HockeyTable.transform.localScale.z / 2);
+                transform.position=new Vector3(transform.position.x, transform.position.y,0);
             }
         }
-        //홀수팀(위)가 
+        //홀수팀이 
         else if (UserNo % 2 == 1)
         {
-            //스틱위치:테이블 절반아래일떄
-            if (transform.position.z < 0)
+            //짝수팀골대쪽에 퍽가져가면 (홀수팀 골대에서의 거리가 더가까우면)
+            if (zDistanceToGoal0 > zDistanceToGoal1)
             {
                 transform.position = new Vector3(transform.position.x, transform.position.y, 0);
             }
-            //스틱위치:테이블위일시.
-            else if (transform.position.z > HockeyTable.transform.localScale.z)
-            {
-                transform.position = new Vector3(transform.position.x, transform.position.y, HockeyTable.transform.localScale.z / 2);
-            }
-        }
         //좌우로 벗어난 경우, 테이블 끝으로 가져옴.
         //벽이 어떤식인지 몰라서 일단 좌우로 나눔.
         if (transform.position.x > HockeyTable.transform.localScale.x / 2)

@@ -61,11 +61,11 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
         {
             if ((transform.position - currentPos).sqrMagnitude >= 10.0f * 10.0f)
             {
-                transform.position = currentPos;=
+                transform.position = currentPos;
             }
             else
             {
-                transform.position = Vector3.Lerp(transform.position, currentPos, Time.deltaTime * 10.0f);=
+                transform.position = Vector3.Lerp(transform.position, currentPos, Time.deltaTime * 10.0f);
             }
             //Debug.Log("is Not Mine");
             return;
@@ -102,7 +102,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
             if (RayHit.collider.tag == "Table")
             {
 
-                ZPositionPoint= RayHit.point.z;
+                MaxZ = RayHit.point.z;
 
                 float zDistanceToGoal0 = Mathf.Abs(Goal[0].transform.position.z - MaxZ);
 
@@ -111,11 +111,11 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
                 //상대팀 벽에서 더 가까우면==자기벽에서 거리가 멀면 중앙으로 고정(z축기준).
                 if (PlayerNum == PlayerNumber.Player1 && zDistanceToGoal1 < zDistanceToGoal0)
                 {
-                    ZPositionPoint= 0;
+                    MaxZ = 0;
                 }
                 else if (PlayerNum == PlayerNumber.Player2 && zDistanceToGoal0 < zDistanceToGoal1)
                 {
-                    ZPositionPoint= 0;
+                    MaxZ = 0;
                 }
                 StrikerDestination = new Vector3(RayHit.point.x, RayHit.point.y + 0.05f, MaxZ);//테이블 바닥에 닿으면 위치 정보 저장
                 //Debug.Log(StrikerDestination);

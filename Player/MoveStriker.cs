@@ -101,7 +101,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks
             else if (RayHit.collider.tag == "Puck")
             {
                 //퍽에 닿으면 퍽에 poke
-                //RayHit.rigidbody.AddForceAtPosition(TouchRay.direction * PokeForce, RayHit.point);
+                RayHit.rigidbody.AddForceAtPosition(TouchRay.direction * PokeForce, RayHit.point);
             }
             //Debug.Log(StrikerDestination);
         }

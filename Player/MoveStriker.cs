@@ -20,6 +20,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
     public float PokeForce = 5.0f;//찌르는 듯한 물리효과의 강도
     public float MoveSpeed = 20.0f; // 이동속도
     public GameObject MiddlePoint; //경기장 중앙 지점
+    public float StrikerMoveSpeed = 50.0f;
     [Range(0, 1)] public int Controller;
     #endregion
 
@@ -40,7 +41,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
 
     void Start()
     {
-        GameController = FindObjectOfType<ARHockeyGameController>();
+        GameController = GameObject.Find("GameController").GetComponent<ARHockeyGameController>();
         StrikerRigidbody = GetComponent<Rigidbody>();
         MiddlePointZ = MiddlePoint.transform.position.z;
         if (PhotonNetwork.IsMasterClient)
@@ -67,7 +68,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
             }
             else
             {
-                transform.position = Vector3.Lerp(transform.position, currentPos, Time.deltaTime * 10.0f);
+                transform.position = Vector3.Lerp(transform.position, currentPos, Time.deltaTime * StrikerMoveSpeed);
             }
             //Debug.Log("is Not Mine");
             return;
@@ -134,7 +135,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
 
     private IEnumerator TouchStriker() //하키 채 움직이기
     {
-        StrikerRigidbody.velocity = StrikerDestination - transform.position;
+        StrikerRigidbody.velocity = (StrikerDestination - transform.position).normalized*StrikerMoveSpeed* Time.deltaTime;
         /*인전 움직이는 부분
         transform.position = Vector3.MoveTowards(transform.position, StrikerDestination, MoveSpeed * Time.deltaTime);
         _Rigidbody.AddForce(transform.position - StrikerDestination);

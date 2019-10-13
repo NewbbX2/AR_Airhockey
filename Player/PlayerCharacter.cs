@@ -38,6 +38,7 @@ public class PlayerCharacter : MonoBehaviour
 
 
     //SJ. 하키스틱 설정
+    /*
     public void StrikerStartSetting()
     {
         StrikerObject = GameController.StrikerList[playerNo - 1];
@@ -46,6 +47,7 @@ public class PlayerCharacter : MonoBehaviour
         StrikerObject.AddComponent<HockeyStriker>();
         StrikerObject.GetComponent<HockeyStriker>().UserNo = playerNo;
     }
+    */
 
 
     //하키스틱 찾은뒤 배치.

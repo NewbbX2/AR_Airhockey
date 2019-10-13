@@ -37,6 +37,19 @@ public class MoveStriker : MonoBehaviourPunCallbacks
     private void Start()
     {
         GameController = FindObjectOfType<ARHockeyGameController>();
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PlayerNum = PlayerNumber.Player1;
+        }
+        else
+        {
+            PlayerNum = PlayerNumber.Player2;
+        }
+        if ((int)PlayerNum == Controller && !photonView.IsMine)
+        {
+            photonView.RequestOwnership();
+        }
     }
 
     private void Update()
@@ -82,7 +95,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks
         {
             if (RayHit.collider.tag == "Table")
             {
-                StrikerDestination = new Vector3(RayHit.point.x, 0.05f, MaxZ); ;//테이블 바닥에 닿으면 위치 정보 저장
+                StrikerDestination = new Vector3(RayHit.point.x, RayHit.point.y, MaxZ); ;//테이블 바닥에 닿으면 위치 정보 저장
                 MaxZ = RayHit.point.z;
             }
             else if (RayHit.collider.tag == "Puck")

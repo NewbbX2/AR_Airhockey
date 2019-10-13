@@ -44,7 +44,7 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        HockeyTable = GameObject.FindGameObjectWithTag("Board");
+        HockeyTable = GameObject.FindGameObjectWithTag("Table");
         StrikerList = GameObject.FindGameObjectsWithTag("Striker");
         Goal = GameObject.FindGameObjectsWithTag("Goal");
        if(Goal[0].GetComponent<GoalInf>().TeamNo==1 && Goal[1].GetComponent<GoalInf>().TeamNo==0)

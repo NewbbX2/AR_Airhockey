@@ -7,7 +7,8 @@ public class HockeyStriker : MonoBehaviour
 {
     //유저번호
     [Range(1, 2)] public int UserNo = 1;
-    Vector3 movementVectorToAffectBall = new Vector3(0, 0, 0);//스틱 이동방향
+    
+    private Vector3 movementVectorToAffectBall = new Vector3(1, 1, 1);//스틱 이동방향
     private Rigidbody StrikerRigidbody;
     private ARHockeyGameController GameController;
     private GameObject HockeyTable;
@@ -70,9 +71,11 @@ public class HockeyStriker : MonoBehaviour
     {
         //스틱 조작후 속도 빛 방향=
         //일단 고정된 스틱인경우의 공이 부딫칠때, 공의 이동방향 및 속도.
-
         movementVectorToAffectBall = GameController.Puck.GetComponent<Puck>().Movement;
-        movementVectorToAffectBall.z *= -1;
+        movementVectorToAffectBall.x *= -1; movementVectorToAffectBall.z *= -1;
+        
+        
+        
     }
     //스틱 이동불가 지역 판정
     void StrikerCannotMoveOutOfTable()
@@ -81,7 +84,7 @@ public class HockeyStriker : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, new Vector3(0, 1, 0), out hit, 1000000))
         {
-            if (hit.transform.CompareTag("Board"))
+            if (hit.transform.CompareTag("Table"))
             {
                 return;
             }
@@ -89,7 +92,7 @@ public class HockeyStriker : MonoBehaviour
         }
         if (Physics.Raycast(transform.position, new Vector3(0, -1, 0), out hit, 1000000))
         {
-            if (hit.transform.CompareTag("Board"))
+            if (hit.transform.CompareTag("Table"))
             {
                 return;
             }

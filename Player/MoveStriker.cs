@@ -32,6 +32,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
     private float MaxZ;
     private float MiddlePointZ; //경기장 중앙 지점의 Z좌표값
     private Rigidbody StrikerRigidbody;
+    private ARHockeyGameController GameController;
     private PlayerNumber PlayerNum;
     #endregion
 
@@ -39,6 +40,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
 
     void Start()
     {
+        GameController = FindObjectOfType<ARHockeyGameController>();
         StrikerRigidbody = GetComponent<Rigidbody>();
         MiddlePointZ = MiddlePoint.transform.position.z;
         if (PhotonNetwork.IsMasterClient)
@@ -104,9 +106,9 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
 
                 MaxZ = RayHit.point.z;
 
-                float zDistanceToGoal0 = Mathf.Abs(Goal[0].transform.position.z - MaxZ);
+                float zDistanceToGoal0 = Mathf.Abs(GameController.Goal[0].transform.position.z - MaxZ);
 
-                float zDistanceToGoal1 = Mathf.Abs(Goal[1].transform.position.z - MaxZ);
+                float zDistanceToGoal1 = Mathf.Abs(GameController.Goal[1].transform.position.z - MaxZ);
 
                 //상대팀 벽에서 더 가까우면==자기벽에서 거리가 멀면 중앙으로 고정(z축기준).
                 if (PlayerNum == PlayerNumber.Player1 && zDistanceToGoal1 < zDistanceToGoal0)

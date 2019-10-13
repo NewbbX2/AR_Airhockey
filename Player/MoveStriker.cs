@@ -31,6 +31,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks
     private PlayerNumber PlayerNum;
     private ARHockeyGameController GameController;
     private float MaxZ;
+    private Rigidbody StrikerRigidbody;
     #endregion
 
 
@@ -54,6 +55,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks
 
     private void Update()
     {
+        StrikerRigidbody = GetComponent<Rigidbody>();
         if (!photonView.IsMine && GameController.IsPhotonConnected)
         {
             if ((transform.position - currentPos).sqrMagnitude >= 10.0f * 10.0f)
@@ -104,11 +106,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks
 
     private IEnumerator TouchStriker() //하키 채 움직이기
     {
-        StrikerRigidbody.velocity = (StickDestination - transform.position).normalized*MoveSpeed;
-        /*인전 움직이는 부분
-        transform.position = Vector3.MoveTowards(transform.position, StickDestination, MoveSpeed * Time.deltaTime);
-        _Rigidbody.AddForce(transform.position - StickDestination);
-        */
+        StrikerRigidbody.velocity = (StrikerDestination - transform.position).normalized*MoveSpeed;
         yield return new WaitForSeconds(0.1f); //0.1초마다 호출
     }
 

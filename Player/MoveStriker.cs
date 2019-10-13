@@ -82,7 +82,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks
     }
 
     private void FindTouchPosition() //Raycast로 하키 채가 움직일 위치 찾기
-    {        
+    {
 #if UNITY_EDITOR || MOUSE
         TouchPos = Input.mousePosition;
 #else
@@ -109,13 +109,11 @@ public class MoveStriker : MonoBehaviourPunCallbacks
 
     private IEnumerator TouchStriker() //하키 채 움직이기
     {
-        MaxZ = RayHit.point.z;
-        if (MaxZ >= 0) //하키가 중앙선 못넘게
-        {
-            MaxZ = 0;
-        }
-        transform.position = Vector3.MoveTowards(transform.position, StrikerDestination, 3 * Time.deltaTime);
-
+        StrikerRigidbody.velocity = (StickDestination - transform.position).normalized*MoveSpeed;
+        /*인전 움직이는 부분
+        transform.position = Vector3.MoveTowards(transform.position, StickDestination, MoveSpeed * Time.deltaTime);
+        _Rigidbody.AddForce(transform.position - StickDestination);
+        */
         yield return new WaitForSeconds(0.1f); //0.1초마다 호출
     }
 

@@ -98,11 +98,6 @@ public class MoveStriker : MonoBehaviourPunCallbacks
                 StrikerDestination = new Vector3(RayHit.point.x, RayHit.point.y, MaxZ); ;//테이블 바닥에 닿으면 위치 정보 저장
                 MaxZ = RayHit.point.z;
             }
-            else if (RayHit.collider.tag == "Puck")
-            {
-                //퍽에 닿으면 퍽에 poke
-                RayHit.rigidbody.AddForceAtPosition(TouchRay.direction * PokeForce, RayHit.point);
-            }
             //Debug.Log(StrikerDestination);
         }
     }

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class HockeyStriker : MonoBehaviour
 {
     //유저번호
-    [Range(1, 2)] public int UserNo = 1;    
+    [Range(1, 2)] public int UserNo = 1;
     Vector3 movementVectorToAffectBall = new Vector3(0, 0, 0);//스틱 이동방향
     private Rigidbody StrikerRigidbody;
     private ARHockeyGameController GameController;
@@ -62,6 +62,7 @@ public class HockeyStriker : MonoBehaviour
                 movementVectorToAffectBall *= 0.99f;
             }
         }
+        StrikerCannotMoveOutOfTable();
     }
     Vector3 Loc_Now = new Vector3(0, 0, 0);
     Vector3 Loc_Past = new Vector3(0, 0, 0);
@@ -74,46 +75,28 @@ public class HockeyStriker : MonoBehaviour
         movementVectorToAffectBall.z *= -1;
     }
     //스틱 이동불가 지역 판정
-    void strikerCannotMoveThere()
+    void StrikerCannotMoveOutOfTable()
     {
-        //짝수팀(아래)가
-        if (UserNo % 2 == 0)
+
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, new Vector3(0, 1, 0), out hit, 1000000))
         {
-            //스틱위치:테이블 절반이상일시.
-            if (transform.position.z > 0)
+            if (hit.transform.CompareTag("Table"))
             {
-                transform.position = new Vector3(transform.position.x, transform.position.y, 0);
+                return;
             }
-            //스틱위치:테이블 아래일시
-            //스틱위치:테이블위일시.
-            else if (transform.position.z < HockeyTable.transform.localScale.z)
-            {
-                transform.position = new Vector3(transform.position.x, transform.position.y, -HockeyTable.transform.localScale.z / 2);
-            }
+
         }
-        //홀수팀(위)가 
-        else if (UserNo % 2 == 1)
+        if (Physics.Raycast(transform.position, new Vector3(0, -1, 0), out hit, 1000000))
         {
-            //스틱위치:테이블 절반아래일떄
-            if (transform.position.z < 0)
+            if (hit.transform.CompareTag("Table"))
             {
-                transform.position = new Vector3(transform.position.x, transform.position.y, 0);
+                return;
             }
-            //스틱위치:테이블위일시.
-            else if (transform.position.z > HockeyTable.transform.localScale.z)
-            {
-                transform.position = new Vector3(transform.position.x, transform.position.y, HockeyTable.transform.localScale.z / 2);
-            }
+
         }
-        //좌우로 벗어난 경우, 테이블 끝으로 가져옴.
-        //벽이 어떤식인지 몰라서 일단 좌우로 나눔.
-        if (transform.position.x > HockeyTable.transform.localScale.x / 2)
-        {
-            transform.position = new Vector3(HockeyTable.transform.localScale.x / 2, transform.position.y, transform.position.z);
-        }
-        else if (transform.position.x < -HockeyTable.transform.localScale.x / 2)
-        {
-            transform.position = new Vector3(HockeyTable.transform.localScale.x / 2, transform.position.y, transform.position.z);
-        }
+        transform.position = new Vector3(0, 0, 0);
+
     }
+
 }

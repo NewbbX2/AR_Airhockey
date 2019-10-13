@@ -24,47 +24,47 @@ public class PlayerCharacter : MonoBehaviour
     GameObject HockeyTable;
 
     //해당 플레이어의 Puck
-    public GameObject StickObject;
+    public GameObject StrikerObject;
 
 
     void Start()
     {
-        HockeyTable = GameObject.FindGameObjectWithTag("Board");
+       // HockeyTable = GameObject.FindGameObjectWithTag("Board");
         GameController = FindObjectOfType<ARHockeyGameController>();
         HockeyTable = GameController.HockeyTable;
         StrikerStartSetting();
-        Instantiate(StickObject, HockeyTable.transform.position + new Vector3(0f, 0f, -5f), Quaternion.identity);
+        Instantiate(StrikerObject, HockeyTable.transform.position + new Vector3(0f, 0f, -5f), Quaternion.identity);
     }
 
 
     //SJ. 하키스틱 설정
-    public void StickStartSetting()
+    public void StrikerStartSetting()
     {
-        StickObject = GameController.StrikerList[playerNo - 1];
-        StickObject.name = "HockeyStriker";
-        StickObject.transform.localScale = new Vector3(1f, 0.5f, 0.1f);
-        StickObject.AddComponent<HockeyStriker>();
-        StickObject.GetComponent<HockeyStriker>().UserNo = playerNo;
+        StrikerObject = GameController.StrikerList[playerNo - 1];
+        StrikerObject.name = "HockeyStriker";
+        StrikerObject.transform.localScale = new Vector3(1f, 0.5f, 0.1f);
+        StrikerObject.AddComponent<HockeyStriker>();
+        StrikerObject.GetComponent<HockeyStriker>().UserNo = playerNo;
     }
 
 
     //하키스틱 찾은뒤 배치.
     public void StrikerStartSetting()
     {
-        StickObject = GameObject.FindGameObjectsWithTag("Striker")[playerNo - 1];
-        StickObject.name = "Striker" + playerNo;
+        StrikerObject = GameObject.FindGameObjectsWithTag("Striker")[playerNo - 1];
+        StrikerObject.name = "Striker" + playerNo;
         if (playerNo == 1)
         {
-            StickObject.transform.localScale = new Vector3(1f, 0.5f, 0.1f);
+            StrikerObject.transform.localScale = new Vector3(1f, 0.5f, 0.1f);
         }
         else if (playerNo == 2)
         {
-            StickObject.transform.localScale = new Vector3(1f, 0.5f, 0.1f);
+            StrikerObject.transform.localScale = new Vector3(1f, 0.5f, 0.1f);
         }
 
-        StickObject.AddComponent<HockeyStriker>();
-        StickObject.GetComponent<HockeyStriker>().UserNo = playerNo;
-        StickObject.GetComponent<HockeyStriker>().UserNo = playerNo;
+        StrikerObject.AddComponent<HockeyStriker>();
+        StrikerObject.GetComponent<HockeyStriker>().UserNo = playerNo;
+       // StrikerObject.GetComponent<HockeyStriker>().UserNo = playerNo;
     }
 
 

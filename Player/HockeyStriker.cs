@@ -62,6 +62,7 @@ public class HockeyStriker : MonoBehaviour
                 movementVectorToAffectBall *= 0.99f;
             }
         }
+        StrikerCannotMoveOutOFTable();
     }
     Vector3 Loc_Now = new Vector3(0, 0, 0);
     Vector3 Loc_Past = new Vector3(0, 0, 0);
@@ -74,7 +75,7 @@ public class HockeyStriker : MonoBehaviour
         movementVectorToAffectBall.z *= -1;
     }
     //스틱 이동불가 지역 판정
-    void strikerCannotMoveThere()
+    void StrikerCannotMoveOutOFTable()
     {
         float zDistanceToGoal0 = Mathf.Abs(GameController.Goal[0].transform.position.z - transform.position.z);
 

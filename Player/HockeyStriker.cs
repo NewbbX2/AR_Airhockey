@@ -84,9 +84,9 @@ public class HockeyStriker : MonoBehaviour
         if (UserNo % 2 == 0)
         {
             //홀수팀골대쪽에 퍽가져가면
-            if (zDistanceToGoal0<zDistanceToGoal1)
+            if (zDistanceToGoal0 < zDistanceToGoal1)
             {
-                transform.position=new Vector3(transform.position.x, transform.position.y,0);
+                transform.position = new Vector3(transform.position.x, transform.position.y, 0);
             }
         }
         //홀수팀이 
@@ -97,15 +97,16 @@ public class HockeyStriker : MonoBehaviour
             {
                 transform.position = new Vector3(transform.position.x, transform.position.y, 0);
             }
-        //좌우로 벗어난 경우, 테이블 끝으로 가져옴.
-        //벽이 어떤식인지 몰라서 일단 좌우로 나눔.
-        if (transform.position.x > HockeyTable.transform.localScale.x / 2)
-        {
-            transform.position = new Vector3(HockeyTable.transform.localScale.x / 2, transform.position.y, transform.position.z);
-        }
-        else if (transform.position.x < -HockeyTable.transform.localScale.x / 2)
-        {
-            transform.position = new Vector3(HockeyTable.transform.localScale.x / 2, transform.position.y, transform.position.z);
+            //좌우로 벗어난 경우, 테이블 끝으로 가져옴.
+            //벽이 어떤식인지 몰라서 일단 좌우로 나눔.
+            if (transform.position.x > HockeyTable.transform.localScale.x / 2)
+            {
+                transform.position = new Vector3(HockeyTable.transform.localScale.x / 2, transform.position.y, transform.position.z);
+            }
+            else if (transform.position.x < -HockeyTable.transform.localScale.x / 2)
+            {
+                transform.position = new Vector3(HockeyTable.transform.localScale.x / 2, transform.position.y, transform.position.z);
+            }
         }
     }
 }

@@ -17,7 +17,6 @@ public class MoveStriker : MonoBehaviourPunCallbacks
 {
     #region 공개 변수들
     public float PokeForce = 5.0f;//찌르는 듯한 물리효과의 강도
-    public float MoveSpeed = 20.0f; // 이동속도
     public GameObject MiddlePoint; //경기장 중앙 지점
     [Range(0, 1)] public int Controller;
     #endregion
@@ -106,7 +105,12 @@ public class MoveStriker : MonoBehaviourPunCallbacks
 
     private IEnumerator TouchStriker() //하키 채 움직이기
     {
-        StrikerRigidbody.velocity = (StrikerDestination - transform.position).normalized*MoveSpeed;
+        Vector3 vec = (StrikerDestination - transform.position);
+        if(vec.magnitude<=1)
+        {
+            vec = vec.normalized;
+        }
+        StrikerRigidbody.velocity = vec;
         yield return new WaitForSeconds(0.1f); //0.1초마다 호출
     }
 

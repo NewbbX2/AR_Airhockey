@@ -55,7 +55,7 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
             Goal[1] = tempobj;
         }
         //첫 퍽을 스폰.
-        if (PhotonNetwork.IsMasterClient)
+        if (PhotonNetwork.IsConnected)
         {
             IsPhotonConnected = true;
             ScoreText.text = "GAME Start";
@@ -149,14 +149,14 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
                     GoalActive = false;
                     ScoreUp(1);
                     SpawnNewPuck(0);
-                    Destroy(puck);
+                    PhotonNetwork.Destroy(puck);
                     break;
 
                 case 1:
                     GoalActive = false;
                     ScoreUp(0);
                     SpawnNewPuck(1);
-                    Destroy(puck);
+                    PhotonNetwork.Destroy(puck);
                     break;
 
                 default:

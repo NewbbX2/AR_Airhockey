@@ -13,7 +13,7 @@ enum PlayerNumber
     Player2,
 }
 
-public class MoveStriker : MonoBehaviourPunCallbacks
+public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
 {
     #region 공개 변수들
     public float PokeForce = 5.0f;//찌르는 듯한 물리효과의 강도

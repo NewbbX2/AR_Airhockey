@@ -55,6 +55,11 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
     private void Update()
     {
         StrikerRigidbody = GetComponent<Rigidbody>();
+        //목표점에 도달했다고 판단되면 정지
+        if ((StrikerDestination - transform.position).magnitude < 0.1)
+        {
+            StrikerRigidbody.velocity = Vector3.zero;
+        }
         if (!photonView.IsMine && GameController.IsPhotonConnected)
         {
             if ((transform.position - currentPos).sqrMagnitude >= 10.0f * 10.0f)
@@ -78,8 +83,9 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
             return;
         }
 #endif
+        
         FindTouchPosition(); //터치 포지션 특정
-        StartCoroutine(TouchStriker());//하키 채 움직이기
+        StartCoroutine(StrikerVelocity());//하키 채 움직이기
     }
 
     private void FindTouchPosition() //Raycast로 하키 채가 움직일 위치 찾기
@@ -96,22 +102,36 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
         {
             if (RayHit.collider.tag == "Table")
             {
-                StrikerDestination = new Vector3(RayHit.point.x, RayHit.point.y, MaxZ); ;//테이블 바닥에 닿으면 위치 정보 저장
+                StrikerDestination = new Vector3(RayHit.point.x, transform.position.y, MaxZ); ;//테이블 바닥에 닿으면 위치 정보 저장
                 MaxZ = RayHit.point.z;
             }
             //Debug.Log(StrikerDestination);
         }
     }
 
-    private IEnumerator TouchStriker() //하키 채 움직이기
+    private IEnumerator StrikerVelocity() //하키 채 움직이기
     {
         Vector3 vec = (StrikerDestination - transform.position);
-        if(vec.magnitude<=1)
+
+        if ((StrikerDestination - transform.position).magnitude < 0.2)
         {
-            vec = vec.normalized;
+            //목표지점이 너무 가까우면 속도적용 안함. 클릭하고 있을시 진동하는거 방지
+        }
+        else
+        {
+            float VecSize = vec.magnitude;
+            // 수정된 속력 = (기본속도) + (거리에 따른 속도 보너스)
+            float FizedSize = (3.0f) + ((0.5f) * VecSize);
+            StrikerRigidbody.velocity = vec * (FizedSize / VecSize);
+        }
+        /*
+        if (vec.magnitude<=1)
+        {
+            Vector3.Normalize(vec);
         }
         StrikerRigidbody.velocity = vec;
-        yield return new WaitForSeconds(0.1f); //0.1초마다 호출
+        */
+        yield return new WaitForSeconds(0.05f); //0.05초마다 호출
     }
 
     #region 포톤뷰 통신부분

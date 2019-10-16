@@ -7,4 +7,15 @@ using UnityEngine;
 public class GoalInf : MonoBehaviour
 {
     [Range(0,1)]public int TeamNo;
+    private ARHockeyGameController GameController;
+
+    private void Start()
+    {
+        GameController = FindObjectOfType<ARHockeyGameController>();
+    }
+
+    public void InGoal(GameObject puck)
+    {
+        GameController.JudgmentGoal(TeamNo, puck);
+    }
 }

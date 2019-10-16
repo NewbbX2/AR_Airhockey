@@ -41,6 +41,7 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
     //보드 오브젝트
     //점수
     private int[] Score = new int[2];
+    private bool GoalActive = false;
 
     void Start()
     {
@@ -116,9 +117,10 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
         }
         else
         {
-            Puck = Instantiate(PuckPrefab, spawnPoint, Quaternion.identity);
+            Puck = (GameObject) Instantiate(PuckPrefab, spawnPoint, Quaternion.identity);
 
         }
+        GoalActive = true;
     }
 
     /// <summary>
@@ -130,5 +132,37 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
         //골 넣은쪽에 점수 올리고 넣은 사람 쪽으로 퍽 스폰
         Score[playerNum]++;
         SetScoreText();
+    }
+
+    /// <summary>
+    /// 골 판정. Puck의 골 안에 들어간 코드를 여기로
+    /// </summary>
+    /// <param name="TeamNo"></param>
+    /// <param name="trigger"></param>
+    public void JudgmentGoal(int TeamNo, GameObject puck)
+    {
+        if (GoalActive)
+        {
+            switch (TeamNo)
+            {
+                case 0:
+                    GoalActive = false;
+                    ScoreUp(1);
+                    SpawnNewPuck(0);
+                    Destroy(puck);
+                    break;
+
+                case 1:
+                    GoalActive = false;
+                    ScoreUp(0);
+                    SpawnNewPuck(1);
+                    Destroy(puck);
+                    break;
+
+                default:
+                    Debug.Log(TeamNo);
+                    return;
+            }
+        }
     }
 }

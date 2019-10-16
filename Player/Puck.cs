@@ -57,12 +57,6 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
     {
         GameObject hitObject = coll.gameObject;
         Vector3 vec3;
-        if (hitObject.name == "Wall_Left" || hitObject.name == "Wall_Right")
-        {
-            Vector3 CurrentVelocity = _Rigidbody.velocity;
-            CurrentVelocity.x *= -0.95f;
-
-        }
         if (hitObject.tag == "Striker")
         {
             HockeyStriker hockeyStrikerInfor = hitObject.GetComponent<HockeyStriker>();
@@ -77,6 +71,9 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (trigger.tag == "Goal")
         {
+            trigger.GetComponent<GoalInf>().InGoal(gameObject);
+        }
+            /*
             if (trigger.GetComponent<GoalInf>())
             {
                 switch (trigger.GetComponent<GoalInf>().TeamNo)
@@ -99,6 +96,7 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
                 }
             }
         }
+        */
         if (trigger.tag == "Corner")
         {
             //반사각 계산을 위한 코너 벽면의 법선 산출

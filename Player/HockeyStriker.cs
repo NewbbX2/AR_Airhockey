@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-public class HockeyStriker : MonoBehaviour
+using Photon.Pun;
+using Photon.Realtime;
+
+public class HockeyStriker : MonoBehaviourPunCallbacks, IPunObservable
 {
     //유저번호
     [Range(1, 2)] public int UserNo = 1;
@@ -29,6 +32,16 @@ public class HockeyStriker : MonoBehaviour
     bool checkisStrikerMovedNow = false;
     void Update()
     {
+        if (!photonView.IsMine)
+        {
+            StrikerRigidbody.velocity = currentVel;
+            Debug.Log(currentVel);
+        }
+        else
+        {
+            //Debug.Log(StrikerRigidbody.velocity);
+        }
+        if (!PhotonNetwork.IsMasterClient) return;
         T_Past = T_Now;
         T_Now = DateTime.Now;
         Loc_Past = Loc_Now;
@@ -47,11 +60,10 @@ public class HockeyStriker : MonoBehaviour
             TimeSpan TS = T_Now - T_Past;
             //movementVectorToAffectBall = (Loc_Now - Loc_Past) / TS.Seconds;
             movementVectorToAffectBall = StrikerRigidbody.velocity;
-        }
-        //현재 이동량이 0이거나
-        //이전에 이동했던게 너무 약할시
+        }        
         else
         {
+            //현재 이동량이 0이거나 이전에 이동했던게 너무 약할시
             //너무 약해진경우 벽처럼
             if (movementVectorToAffectBall.sqrMagnitude <= 0.1)
             {
@@ -101,5 +113,22 @@ public class HockeyStriker : MonoBehaviour
         transform.position = new Vector3(0, transform.position.y, 0);
 
     }
+
+    #region 포톤뷰 통신부분
+    private Vector3 currentVel;
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(StrikerRigidbody.velocity);
+            //Debug.Log("send : " + StrikerRigidbody.velocity);
+        }
+        else
+        {
+            currentVel = (Vector3)stream.ReceiveNext();
+            //Debug.Log("receive : " + currentVel);
+        }
+    }
+    #endregion
 
 }

@@ -37,7 +37,7 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
         
         if (!photonView.IsMine && GameController.IsPhotonConnected)
         {
-
+            _Rigidbody.velocity = currentVel;
             if ((transform.position - currentPos).sqrMagnitude >= 10.0f * 10.0f)
             {
                 transform.position = currentPos;
@@ -49,18 +49,16 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
                 transform.rotation = Quaternion.Slerp(transform.rotation, currentRot, Time.deltaTime * 10.0f);
             }
         }
-        
+
         //퍽 속도 체크
+        //Movement = photonView.IsMine ? _Rigidbody.velocity : currentVel;
         Movement = _Rigidbody.velocity;
+        //Debug.Log(Movement);
     }
 
     //충돌한 오브젝트에 따라 동작.
     void OnCollisionEnter(Collision coll)
     {
-        if (!photonView.IsMine)
-        {
-            return;
-        }
         GameObject hitObject = coll.gameObject;
         Vector3 vec3;
         if (hitObject.tag == "Striker")
@@ -75,10 +73,6 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
     //골에 닿을시 작동. 코너 트리거 박스면 튕기는 듯한 이펙트
     private void OnTriggerEnter(Collider trigger)
     {
-        if (!photonView.IsMine)
-        {
-            return;
-        }
         if (trigger.tag == "Goal")
         {
             trigger.GetComponent<GoalInf>().InGoal(gameObject);
@@ -119,10 +113,6 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
     //골을 통과하면 공을 삭제
     private void OnTriggerExit(Collider other)
     {
-        if (!photonView.IsMine)
-        {
-            return;
-        }
         if (other.tag == "Team1" || other.tag == "Team2")
         {
             PhotonNetwork.Destroy(gameObject);
@@ -132,17 +122,20 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
     #region 포톤뷰 통신부분
     private Vector3 currentPos;
     private Quaternion currentRot;
+    private Vector3 currentVel;
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
             stream.SendNext(transform.position);
             stream.SendNext(transform.rotation);
+            stream.SendNext(_Rigidbody.velocity);
         }
         else
         {
             currentPos = (Vector3)stream.ReceiveNext();
             currentRot = (Quaternion)stream.ReceiveNext();
+            currentVel = (Vector3)stream.ReceiveNext();
         }
     }
     #endregion

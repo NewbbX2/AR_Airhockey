@@ -60,7 +60,7 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
             IsPhotonConnected = true;
             ScoreText.text = "GAME Start";
             Debug.Log("GameStart");
-            SpawnNewPuck(0);
+            if (PhotonNetwork.IsMasterClient) SpawnNewPuck(0);
         }
         else
         {

@@ -8,7 +8,6 @@ public class OthelloInput : MonoBehaviour
 {
     public bool touchUse = false;
     private RaycastHit RayHit;
-    public Text ScoreText;
     OthelloGameController _OhelloGameController;
 
 
@@ -43,7 +42,7 @@ public class OthelloInput : MonoBehaviour
                 if (hit.collider.tag == "BoardBluck")
                 {
                     OthelloBoardBluck bluck = hit.collider.gameObject.GetComponent<OthelloBoardBluck>();
-                    ScoreText.text = bluck.name;
+
                     _OhelloGameController.GetInputOn(bluck);
                 }
 
@@ -68,7 +67,6 @@ public class OthelloInput : MonoBehaviour
                 if (hit.collider.tag == "BoardBluck")
             {
                     OthelloBoardBluck bluck = hit.collider.gameObject.GetComponent<OthelloBoardBluck>();
-                    ScoreText.text = bluck.name;
                     _OhelloGameController.GetInputOn(bluck);
                 }
 

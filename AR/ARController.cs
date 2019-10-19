@@ -2,7 +2,7 @@
 
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 using GoogleARCore;
 
@@ -40,6 +40,12 @@ public class ARController : MonoBehaviourPunCallbacks, IPunObservable
         if (Input.touchCount < 1 || (touch = Input.GetTouch(0)).phase != TouchPhase.Began)
         {
             return;
+        }
+
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            PhotonNetwork.LeaveRoom();
+            SceneManager.LoadScene(0);
         }
 
         /* Canvas를 통한 eventSystem이 존재하면 설치
@@ -108,5 +114,11 @@ public class ARController : MonoBehaviourPunCallbacks, IPunObservable
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         //throw new System.NotImplementedException();
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        PhotonNetwork.LeaveRoom();
+        SceneManager.LoadScene(0);
     }
 }

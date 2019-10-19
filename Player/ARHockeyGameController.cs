@@ -48,6 +48,10 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
         HockeyTable = GameObject.FindGameObjectWithTag("Table");
         StrikerList = GameObject.FindGameObjectsWithTag("Striker");
         Goal = GameObject.FindGameObjectsWithTag("Goal");
+        if(ScoreText == null)
+        {
+            ScoreText = FindObjectOfType<TextMeshProUGUI>();
+        }
        if(Goal[0].GetComponent<GoalInf>().TeamNo==1 && Goal[1].GetComponent<GoalInf>().TeamNo==0)
         {
             GameObject tempobj = Goal[0];

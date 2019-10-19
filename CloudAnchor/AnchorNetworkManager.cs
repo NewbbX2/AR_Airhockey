@@ -128,14 +128,7 @@ public class AnchorNetworkManager : MonoBehaviourPunCallbacks
     {
         Debug.Log("Left room");
     }
-
-    public override void OnMasterClientSwitched(Player newMasterClient)
-    {
-        ShowDebugMessage("Master Client leave room. Exit room in 5 sec...");
-        PhotonNetwork.LeaveRoom();
-        Invoke("ExitRoom", 5.0f);
-    }
-
+    
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
         Debug.Log("Room list is updated");

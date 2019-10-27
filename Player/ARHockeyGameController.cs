@@ -234,9 +234,19 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
     }
 
     #region 포톤 네트워크 콜백
-    public override void OnLeftRoom()
+    public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        props[PlayerNumber.ToString()] = false;
+        props = PhotonNetwork.CurrentRoom.CustomProperties;
+        switch (PlayerNumber)
+        {
+            case 1:
+                props["2"] = false;
+                break;
+            case 2:
+                props["1"] = false;
+                break;
+        }
+        PhotonNetwork.CurrentRoom.SetCustomProperties(props);
     }
     #endregion
 }

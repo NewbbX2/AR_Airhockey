@@ -39,6 +39,7 @@ public class HockeyStriker : MonoBehaviourPunCallbacks, IPunObservable
         }
         else
         {
+            StrikerCannotMoveOutOfTable();
             //Debug.Log(StrikerRigidbody.velocity);
         }
         if (!PhotonNetwork.IsMasterClient) return;
@@ -75,7 +76,7 @@ public class HockeyStriker : MonoBehaviourPunCallbacks, IPunObservable
                 movementVectorToAffectBall *= 0.99f;
             }
         }
-        StrikerCannotMoveOutOfTable();
+        
     }
     Vector3 Loc_Now = new Vector3(0, 0, 0);
     Vector3 Loc_Past = new Vector3(0, 0, 0);

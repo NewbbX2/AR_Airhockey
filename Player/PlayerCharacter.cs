@@ -65,7 +65,7 @@ public class PlayerCharacter : MonoBehaviour
         }
 
         StrikerObject.AddComponent<HockeyStriker>();
-        StrikerObject.GetComponent<HockeyStriker>().UserNo = playerNo;
+        //StrikerObject.GetComponent<HockeyStriker>().UserNo = playerNo;
        // StrikerObject.GetComponent<HockeyStriker>().UserNo = playerNo;
     }
 

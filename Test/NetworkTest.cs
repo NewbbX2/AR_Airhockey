@@ -24,7 +24,10 @@ public class NetworkTest : MonoBehaviourPunCallbacks
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
         Debug.Log("Failed join room");
-        PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = MaxPlayer });
+        RoomOptions roomOption = new RoomOptions();
+        roomOption.MaxPlayers = 2;
+        roomOption.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { {"1", false }, {"2", false} };
+        PhotonNetwork.CreateRoom(null, roomOption);
         Debug.Log("Create new!");
     }
 
@@ -32,8 +35,13 @@ public class NetworkTest : MonoBehaviourPunCallbacks
     {
         Debug.Log("Join!");
         PhotonNetwork.AutomaticallySyncScene = true;
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(1);          
     }    
+
+    public override void OnCreatedRoom()
+    {
+        
+    }
 
     public void OnButtonDown()
     {

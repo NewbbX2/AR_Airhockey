@@ -19,7 +19,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
     #region 공개 변수들
     public float PokeForce = 5.0f;//찌르는 듯한 물리효과의 강도
     public GameObject MiddlePoint; //경기장 중앙 지점
-    [Range(0, 1)] public int Controller;
+    //[Range(0, 1)] public int Controller;
     #endregion
 
     #region 내부 변수
@@ -28,7 +28,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
     private RaycastHit RayHit;
     private GameObject HockeyBoard;
     private Vector3 StrikerDestination;
-    private PlayerNumber PlayerNum;
+    //private PlayerNumber PlayerNum;
     private ARHockeyGameController GameController;
     private float MaxZ;
     private Rigidbody StrikerRigidbody;
@@ -38,7 +38,11 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
     private void Start()
     {
         GameController = FindObjectOfType<ARHockeyGameController>();
+<<<<<<< Updated upstream
 
+=======
+        /*
+>>>>>>> Stashed changes
         if (PhotonNetwork.IsMasterClient)
         {
             PlayerNum = PlayerNumber.Player1;
@@ -51,6 +55,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
         {
             photonView.RequestOwnership();
         }
+        */
     }
 
     private void Update()
@@ -74,12 +79,16 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
             return;
         }
 #if UNITY_EDITOR || MOUSE
-        if (!Input.GetMouseButton(0) || (int)PlayerNum != Controller)
+        if (!Input.GetMouseButton(0) || !photonView.IsMine)//(int)PlayerNum != Controller)
         {
             return;
         }
 #else
+<<<<<<< Updated upstream
         if (Input.touchCount == 0)
+=======
+        if (Input.touchCount == 0 || !photonView.IsMine)//(int)PlayerNum != Controller)
+>>>>>>> Stashed changes
         {
             return;
         }

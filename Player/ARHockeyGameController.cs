@@ -1,10 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Photon.Pun;
 using Photon.Realtime;
+using ExitGames.Client.Photon;
 //시작전 세팅
 //EmptyObject의 name을 GameOBJ로 수정한뒤, 이 스크립트를 달아준다.
 //tag가 Striker인 오브젝트가 2개가 있어야한다.
@@ -25,9 +24,11 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
 {
 
     #region Inspector용 공개 변수
-    public Transform SpawnPoint1;
-    public Transform SpawnPoint2;
+    public Transform SpawnPoint1; // 1플레이어 쪽 공 소환 위치
+    public Transform SpawnPoint2; // 2플레이어 쪽 공 소환 위치
+    public Transform[] PlayerSpawn; // 스트라이커 소환 위치
     public TextMeshProUGUI ScoreText;    // 스코어 표시할 텍스트
+    public GameObject StrikerPrefab; // 스폰할 스트라이커 프리팹
     public GameObject PuckPrefab; //스폰할 퍽 프리팹
     public GameObject HockeyTable; // 하키 테이블
     [System.NonSerialized] public GameObject[] Goal;
@@ -40,24 +41,78 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
 
     //보드 오브젝트
     //점수
-    private int[] Score = new int[2];
+    private int[] Score = new int[2]; // 팀별 점수 저장할 배열
+    private int PlayerNumber; // 플레이어 넘버
     private bool GoalActive = false;
+<<<<<<< Updated upstream
+=======
+    private Hashtable props; // 방 프로퍼티
+    
+    private void Awake()
+    {
+        if(ScoreText == null)
+        {
+            ScoreText = FindObjectOfType<TextMeshProUGUI>();
+        }
+    }
+>>>>>>> Stashed changes
 
     void Start()
     {
+        //플레이어 넘버를 정한다.
+        props = PhotonNetwork.CurrentRoom.CustomProperties;
+        foreach(var key in props.Keys)
+        {            
+            Debug.Log(key + ": " + props[key].ToString());
+        }
+        
+        foreach(string key in props.Keys)
+        {
+            if (key.Equals("1") && !(bool)props[key])
+            {
+                props[key] = true;
+                PhotonNetwork.CurrentRoom.SetCustomProperties(props);
+                SetPlayerNumber(int.Parse(key));
+                break;
+            }
+            else if (key.Equals("2") && !(bool)props[key])
+            {
+                props[key] = true;
+                PhotonNetwork.CurrentRoom.SetCustomProperties(props);
+                SetPlayerNumber(int.Parse(key));
+                break;
+            }
+
+        }
+
+        foreach (var key in props.Keys)
+        {
+            Debug.Log(key + ": " + props[key].ToString());
+        }
+
+
         HockeyTable = GameObject.FindGameObjectWithTag("Table");
-        StrikerList = GameObject.FindGameObjectsWithTag("Striker");
+        //StrikerList = GameObject.FindGameObjectsWithTag("Striker");
         Goal = GameObject.FindGameObjectsWithTag("Goal");
+<<<<<<< Updated upstream
         if(ScoreText == null)
         {
             ScoreText = FindObjectOfType<TextMeshProUGUI>();
         }
        if(Goal[0].GetComponent<GoalInf>().TeamNo==1 && Goal[1].GetComponent<GoalInf>().TeamNo==0)
+=======
+        
+        if (Goal[0].GetComponent<GoalInf>().TeamNo==1 && Goal[1].GetComponent<GoalInf>().TeamNo==0)
+>>>>>>> Stashed changes
         {
             GameObject tempobj = Goal[0];
             Goal[0] = Goal[1];
             Goal[1] = tempobj;
         }
+
+        //스트라이커를 스폰
+        InstantiateStriker();
+
         //첫 퍽을 스폰.
         if (PhotonNetwork.IsConnected)
         {
@@ -74,6 +129,22 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
             SpawnNewPuck(0);
         }
 
+    }
+
+    //플레이어 넘버 배정
+    private void SetPlayerNumber(int playerNumber)
+    {
+        PlayerNumber = playerNumber;
+        Debug.Log("Player " + PlayerNumber + " is Setted");
+    }
+
+    private void InstantiateStriker()
+    {
+        Transform trans = PlayerSpawn[PlayerNumber-1].transform;
+        var striker = PhotonNetwork.Instantiate(StrikerPrefab.name, trans.position, Quaternion.identity);
+        striker.transform.localScale = new Vector3(striker.transform.localScale.x, 
+                                                   striker.transform.localScale.y, 
+                                                   striker.transform.localScale.z*trans.localScale.z);
     }
 
     //스코어 표기
@@ -169,4 +240,11 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
             }
         }
     }
+
+    #region 포톤 네트워크 콜백
+    public override void OnLeftRoom()
+    {
+        props[PlayerNumber.ToString()] = false;
+    }
+    #endregion
 }

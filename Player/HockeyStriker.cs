@@ -9,7 +9,7 @@ using Photon.Realtime;
 public class HockeyStriker : MonoBehaviourPunCallbacks, IPunObservable
 {
     //유저번호
-    [Range(1, 2)] public int UserNo = 1;
+    //[Range(1, 2)] public int UserNo = 1;
     
     private Vector3 movementVectorToAffectBall = new Vector3(1, 1, 1);//스틱 이동방향
     private Rigidbody StrikerRigidbody;
@@ -35,7 +35,7 @@ public class HockeyStriker : MonoBehaviourPunCallbacks, IPunObservable
         if (!photonView.IsMine)
         {
             StrikerRigidbody.velocity = currentVel;
-            Debug.Log(currentVel);
+            //Debug.Log(currentVel);
         }
         else
         {

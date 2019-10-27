@@ -38,11 +38,8 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
     private void Start()
     {
         GameController = FindObjectOfType<ARHockeyGameController>();
-<<<<<<< Updated upstream
 
-=======
         /*
->>>>>>> Stashed changes
         if (PhotonNetwork.IsMasterClient)
         {
             PlayerNum = PlayerNumber.Player1;

@@ -44,8 +44,6 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
     private int[] Score = new int[2]; // 팀별 점수 저장할 배열
     private int PlayerNumber; // 플레이어 넘버
     private bool GoalActive = false;
-<<<<<<< Updated upstream
-=======
     private Hashtable props; // 방 프로퍼티
     
     private void Awake()
@@ -55,7 +53,6 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
             ScoreText = FindObjectOfType<TextMeshProUGUI>();
         }
     }
->>>>>>> Stashed changes
 
     void Start()
     {
@@ -94,16 +91,11 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
         HockeyTable = GameObject.FindGameObjectWithTag("Table");
         //StrikerList = GameObject.FindGameObjectsWithTag("Striker");
         Goal = GameObject.FindGameObjectsWithTag("Goal");
-<<<<<<< Updated upstream
         if(ScoreText == null)
         {
             ScoreText = FindObjectOfType<TextMeshProUGUI>();
-        }
-       if(Goal[0].GetComponent<GoalInf>().TeamNo==1 && Goal[1].GetComponent<GoalInf>().TeamNo==0)
-=======
-        
+        }        
         if (Goal[0].GetComponent<GoalInf>().TeamNo==1 && Goal[1].GetComponent<GoalInf>().TeamNo==0)
->>>>>>> Stashed changes
         {
             GameObject tempobj = Goal[0];
             Goal[0] = Goal[1];

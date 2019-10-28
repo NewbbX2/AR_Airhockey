@@ -10,7 +10,7 @@ public class HockeyStriker : MonoBehaviourPunCallbacks, IPunObservable
 {
     //유저번호
     [Range(1, 2)] public int UserNo = 1;
-    
+
     private Vector3 movementVectorToAffectBall = new Vector3(1, 1, 1);//스틱 이동방향
     private Rigidbody StrikerRigidbody;
     private ARHockeyGameController GameController;
@@ -60,7 +60,7 @@ public class HockeyStriker : MonoBehaviourPunCallbacks, IPunObservable
             TimeSpan TS = T_Now - T_Past;
             //movementVectorToAffectBall = (Loc_Now - Loc_Past) / TS.Seconds;
             movementVectorToAffectBall = StrikerRigidbody.velocity;
-        }        
+        }
         else
         {
             //현재 이동량이 0이거나 이전에 이동했던게 너무 약할시
@@ -85,9 +85,9 @@ public class HockeyStriker : MonoBehaviourPunCallbacks, IPunObservable
         //일단 고정된 스틱인경우의 공이 부딫칠때, 공의 이동방향 및 속도.
         movementVectorToAffectBall = GameController.Puck.GetComponent<Puck>().Movement;
         movementVectorToAffectBall.x *= -1; movementVectorToAffectBall.z *= -1;
-        
-        
-        
+
+
+
     }
     //스틱 이동불가 지역 판정
     void StrikerCannotMoveOutOfTable()
@@ -127,6 +127,20 @@ public class HockeyStriker : MonoBehaviourPunCallbacks, IPunObservable
         {
             currentVel = (Vector3)stream.ReceiveNext();
             //Debug.Log("receive : " + currentVel);
+        }
+    }
+
+    [PunRPC]
+    public void ReplaceStick(Vector3 point1, Vector3 point2)
+    {
+        switch (UserNo)
+        {
+            case 1:
+                transform.position = point1;
+                break;
+            case 2:
+                transform.position = point2;
+                break;
         }
     }
     #endregion

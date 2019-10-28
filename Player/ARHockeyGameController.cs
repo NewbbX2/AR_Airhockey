@@ -48,11 +48,11 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
         HockeyTable = GameObject.FindGameObjectWithTag("Table");
         StrikerList = GameObject.FindGameObjectsWithTag("Striker");
         Goal = GameObject.FindGameObjectsWithTag("Goal");
-        if(ScoreText == null)
+        if (ScoreText == null)
         {
             ScoreText = FindObjectOfType<TextMeshProUGUI>();
         }
-       if(Goal[0].GetComponent<GoalInf>().TeamNo==1 && Goal[1].GetComponent<GoalInf>().TeamNo==0)
+        if (Goal[0].GetComponent<GoalInf>().TeamNo == 1 && Goal[1].GetComponent<GoalInf>().TeamNo == 0)
         {
             GameObject tempobj = Goal[0];
             Goal[0] = Goal[1];
@@ -65,6 +65,7 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
             ScoreText.text = "GAME Start";
             Debug.Log("GameStart");
             if (PhotonNetwork.IsMasterClient) SpawnNewPuck(0);
+            photonView.RPC("SendScoreToAll", RpcTarget.AllBuffered, Score[0], Score[1]);
         }
         else
         {
@@ -76,8 +77,29 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
 
     }
 
+    /*
+    private void Update()
+    {
+        if(Score[0]+Score[1] > 0)
+        {
+            SetScoreText();
+        }
+    }
+    */
+
+    //네트워크로 점수를 받아오고 점수 출력   
+    [PunRPC]
+    public void SendScoreToAll(int score0, int score1)
+    {
+        Score[0] = score0; Score[1] = score1;
+        if (score0 + score1 > 0)
+        {
+            SetScoreText();
+        }
+    }
+
     //스코어 표기
-    private void SetScoreText()
+    public void SetScoreText()
     {
         ScoreText.text = "Team1:" + Score[0] + "  ||  " + "Team2:" + Score[1];
     }
@@ -121,7 +143,7 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
         }
         else
         {
-            Puck = (GameObject) Instantiate(PuckPrefab, spawnPoint, Quaternion.identity);
+            Puck = (GameObject)Instantiate(PuckPrefab, spawnPoint, Quaternion.identity);
 
         }
         GoalActive = true;
@@ -136,6 +158,7 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
         //골 넣은쪽에 점수 올리고 넣은 사람 쪽으로 퍽 스폰
         Score[playerNum]++;
         SetScoreText();
+        photonView.RPC("SendScoreToAll", RpcTarget.AllBuffered, Score[0], Score[1]);
     }
 
     /// <summary>
@@ -168,5 +191,16 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
                     return;
             }
         }
+    }
+
+    /// <summary>
+    /// 게임 리셋
+    /// </summary>
+    public void ResetGame()
+    {
+        Score[0] = 0; Score[1] = 0;
+        ScoreText.text = "GAME Start";
+        SpawnNewPuck(0);
+        photonView.RPC("ReplaceStick", RpcTarget.AllBuffered, SpawnPoint1.position, SpawnPoint2.position);
     }
 }

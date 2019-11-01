@@ -18,7 +18,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
 {
     #region 공개 변수들
     public float PokeForce = 5.0f;//찌르는 듯한 물리효과의 강도
-    public GameObject MiddlePoint; //경기장 중앙 지점
+    //public GameObject MiddlePoint; //경기장 중앙 지점
     //[Range(0, 1)] public int Controller;
     #endregion
 
@@ -63,7 +63,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
         {
             StrikerRigidbody.velocity = Vector3.zero;
         }
-        if (!photonView.IsMine && GameController.IsPhotonConnected)
+        if (!photonView.IsMine)
         {
             if ((transform.position - currentPos).sqrMagnitude >= 10.0f * 10.0f)
             {
@@ -75,33 +75,31 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
             }
             return;
         }
-#if UNITY_EDITOR || MOUSE
+#if !UNITY_EDITOR || !MOUSE
+        if (Input.touchCount == 0 || !photonView.IsMine)//(int)PlayerNum != Controller)
+        {
+            return;
+        }
+
+#else
         if (!Input.GetMouseButton(0) || !photonView.IsMine)//(int)PlayerNum != Controller)
         {
             return;
         }
-#else
-<<<<<<< Updated upstream
-        if (Input.touchCount == 0)
-=======
-        if (Input.touchCount == 0 || !photonView.IsMine)//(int)PlayerNum != Controller)
->>>>>>> Stashed changes
-        {
-            return;
-        }
 #endif
-        
+
         FindTouchPosition(); //터치 포지션 특정
         StartCoroutine(StrikerVelocity());//하키 채 움직이기
     }
 
     private void FindTouchPosition() //Raycast로 하키 채가 움직일 위치 찾기
     {
-#if UNITY_EDITOR || MOUSE
-        TouchPos = Input.mousePosition;
-#else
+#if !UNITY_EDITOR || !MOUSE
         TouchPos = Input.GetTouch(0).position;
+#else
+        TouchPos = Input.mousePosition;        
 #endif
+        //Debug.Log(TouchPos);
         TouchVector = new Vector3(TouchPos.x, TouchPos.y, 0.0f);
         Ray TouchRay = Camera.main.ScreenPointToRay(TouchVector);//터치한 방향으로 Ray 설정
 

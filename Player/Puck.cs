@@ -35,7 +35,7 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
     void Update()
     {
         
-        if (!photonView.IsMine && GameController.IsPhotonConnected)
+        if (!photonView.IsMine)
         {
             _Rigidbody.velocity = currentVel;
             if ((transform.position - currentPos).sqrMagnitude >= 10.0f * 10.0f)
@@ -64,16 +64,25 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
         if (hitObject.tag == "Striker")
         {
             HockeyStriker hockeyStrikerInfor = hitObject.GetComponent<HockeyStriker>();
-            vec3 = hockeyStrikerInfor.StrikerMoveBall() * 10f; //이정도 값을 해야 좀 속도가 났음
+            vec3 = hockeyStrikerInfor.StrikerMoveBall() * 5.0f; //이정도 값을 해야 좀 속도가 났음
             _Rigidbody.AddForce(vec3);
         }
+
+        if (coll.collider.tag.Equals("Corner"))
+        {
+            //반사각 계산을 위한 코너 벽면의 법선 산출
+            //Vector3 inNormal_OfTrigger = new Vector3(Mathf.Cos(Mathf.Deg2Rad * trigger.transform.eulerAngles.y), 0, -Mathf.Sin(Mathf.Deg2Rad * trigger.transform.eulerAngles.y));
+            //_Rigidbody.velocity = Vector3.Reflect(_Rigidbody.velocity, inNormal_OfTrigger);
+            //Debug.Log(_Rigidbody.velocity.ToString());
+        }
+
     }
 
 
     //골에 닿을시 작동. 코너 트리거 박스면 튕기는 듯한 이펙트
     private void OnTriggerEnter(Collider trigger)
     {
-        if (trigger.tag == "Goal")
+        if (trigger.tag.Equals("Goal"))
         {
             trigger.GetComponent<GoalInf>().InGoal(gameObject);
         }
@@ -100,12 +109,12 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
                 }
             }
         }
-        */
-        if (trigger.tag == "Corner")
+        */   
+        if (trigger.tag.Equals("Goal_Wall"))
         {
-            //반사각 계산을 위한 코너 벽면의 법선 산출
-            Vector3 inNormal_OfTrigger = new Vector3(Mathf.Cos(Mathf.Deg2Rad * trigger.transform.eulerAngles.y), 0, -Mathf.Sin(Mathf.Deg2Rad * trigger.transform.eulerAngles.y));
-            _Rigidbody.velocity = Vector3.Reflect(_Rigidbody.velocity, inNormal_OfTrigger);
+            //골에 들어갔을 때 공의 속도를 멈춤      
+            Debug.Log("Goal hit");
+            _Rigidbody.velocity = Vector3.zero;
             //Debug.Log(_Rigidbody.velocity.ToString());
         }
     }

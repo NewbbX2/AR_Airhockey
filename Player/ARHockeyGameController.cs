@@ -28,11 +28,10 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
     public Transform SpawnPoint2; // 2플레이어 쪽 공 소환 위치
     public Transform[] PlayerSpawn; // 스트라이커 소환 위치
     public TextMeshProUGUI ScoreText;    // 스코어 표시할 텍스트
-    public GameObject StrikerPrefab; // 스폰할 스트라이커 프리팹
+    public GameObject[] StrikerPrefab; // 스폰할 스트라이커 프리팹
     public GameObject PuckPrefab; //스폰할 퍽 프리팹
     public GameObject HockeyTable; // 하키 테이블
     [System.NonSerialized] public GameObject[] Goal;
-    public bool IsPhotonConnected = false;
     [System.NonSerialized] public GameObject Puck;
     [System.NonSerialized] public GameObject[] StrikerList;
     #endregion
@@ -45,9 +44,11 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
     private int PlayerNumber; // 플레이어 넘버
     private bool GoalActive = false;
     private Hashtable props; // 방 프로퍼티
+    private Vu_UIController UIController; // UI 컨트롤러
     
     private void Awake()
     {
+        UIController = FindObjectOfType<Vu_UIController>();
         if(ScoreText == null)
         {
             ScoreText = FindObjectOfType<TextMeshProUGUI>();
@@ -108,17 +109,14 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
         //첫 퍽을 스폰.
         if (PhotonNetwork.IsConnected)
         {
-            IsPhotonConnected = true;
             ScoreText.text = "GAME Start";
             Debug.Log("GameStart");
             if (PhotonNetwork.IsMasterClient) SpawnNewPuck(0);
         }
         else
         {
-            IsPhotonConnected = false;
             ScoreText.text = " PothonError discon";
             Debug.Log("err : PothonError discon");
-            SpawnNewPuck(0);
         }
 
     }
@@ -133,7 +131,7 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
     private void InstantiateStriker()
     {
         Transform trans = PlayerSpawn[PlayerNumber-1].transform;
-        var striker = PhotonNetwork.Instantiate(StrikerPrefab.name, trans.position, Quaternion.identity);
+        var striker = PhotonNetwork.Instantiate(StrikerPrefab[PlayerNumber-1].name, trans.position, StrikerPrefab[PlayerNumber-1].transform.rotation);
         striker.transform.localScale = new Vector3(striker.transform.localScale.x, 
                                                    striker.transform.localScale.y, 
                                                    striker.transform.localScale.z*trans.localScale.z);
@@ -142,7 +140,7 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
     //스코어 표기
     private void SetScoreText()
     {
-        ScoreText.text = "Team1:" + Score[0] + "  ||  " + "Team2:" + Score[1];
+        ScoreText.text = "Team1:" + Score[0] + "  ||  " + "Team2:" + Score[1];        
     }
 
     //게임 종료
@@ -176,29 +174,31 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
                 return;
         }
 
-        //프리팹을 이용하여 인스턴스화
-        if (IsPhotonConnected)
-        {
-            if (PhotonNetwork.IsMasterClient)
-                PhotonNetwork.InstantiateSceneObject(PuckPrefab.name, spawnPoint, Quaternion.identity);
-        }
-        else
-        {
-            Puck = (GameObject) Instantiate(PuckPrefab, spawnPoint, Quaternion.identity);
-
-        }
+        PhotonNetwork.InstantiateSceneObject(PuckPrefab.name, spawnPoint, PuckPrefab.transform.rotation);
         GoalActive = true;
+        
     }
 
     /// <summary>
     /// 점수를 올리고 싶은 플레이어의 번호를 매개변수에 넣으시오
     /// </summary>
     /// <param name="playerNum"></param>
-    public void ScoreUp(int playerNum)
+    
+    [PunRPC]
+    public void ScoreSet(int playerNum, int score)
     {
         //골 넣은쪽에 점수 올리고 넣은 사람 쪽으로 퍽 스폰
-        Score[playerNum]++;
+        Score[playerNum] = score;
         SetScoreText();
+
+        if (playerNum+1 == PlayerNumber)
+        {
+            UIController.MessagePrint("Booya!");
+        }
+        else
+        {
+            UIController.MessagePrint("Oops!");
+        }
     }
 
     /// <summary>
@@ -214,14 +214,20 @@ public class ARHockeyGameController : MonoBehaviourPunCallbacks
             {
                 case 0:
                     GoalActive = false;
-                    ScoreUp(1);
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        photonView.RPC("ScoreSet", RpcTarget.AllBuffered, 1, Score[1] + 1);
+                    }                    
                     SpawnNewPuck(0);
                     PhotonNetwork.Destroy(puck);
                     break;
 
                 case 1:
                     GoalActive = false;
-                    ScoreUp(0);
+                    if (PhotonNetwork.IsMasterClient)
+                    {
+                        photonView.RPC("ScoreSet", RpcTarget.AllBuffered, 0, Score[0] + 1);
+                    }
                     SpawnNewPuck(1);
                     PhotonNetwork.Destroy(puck);
                     break;

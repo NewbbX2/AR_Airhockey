@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 
@@ -13,13 +14,14 @@ public class Vu_NetworkController : MonoBehaviourPunCallbacks
 
     #region 내부변수
     private Vu_UIController UICon;
+    private BackgroundSound BGM;
     private RoomOptions RoomOps = new RoomOptions();
     #endregion
     private void Awake()
     {
         //룸 옵션
         RoomOps.MaxPlayers = 2;
-        RoomOps.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "1", false }, { "2", false } };
+        RoomOps.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "1", false }, { "2", false }};
 
         PhotonNetwork.GameVersion = GameVersion;
         PhotonNetwork.AutomaticallySyncScene = true;
@@ -29,6 +31,7 @@ public class Vu_NetworkController : MonoBehaviourPunCallbacks
     {
         UICon = FindObjectOfType<Vu_UIController>();
         UICon.MessagePrint("Connecting to server...");
+        BGM = FindObjectOfType<BackgroundSound>();
 
         if (!PhotonNetwork.ConnectUsingSettings()) UICon.MessagePrint("Fail to connect to server. Plese check internet");
     }
@@ -51,6 +54,7 @@ public class Vu_NetworkController : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         UICon.RoomLabelText.text = PhotonNetwork.CurrentRoom.Name;
+        UICon.RoomLabelText.GetComponentInParent<Image>().enabled = true;
         UICon.MessagePrint("Entered");
         
         InstantiateTable();
@@ -65,10 +69,13 @@ public class Vu_NetworkController : MonoBehaviourPunCallbacks
     }
 
     //룸 입장
-    public void EnterToRoom()
+    public bool EnterToRoom()
     {
+        if (!PhotonNetwork.IsConnectedAndReady) return true;
         UICon.MessagePrint("Matching...");
         PhotonNetwork.JoinRandomRoom();
+        BGM.PlayPlayMusic();
+        return false;
     }
 
     public void InstantiateTable()

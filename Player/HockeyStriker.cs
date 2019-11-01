@@ -39,7 +39,7 @@ public class HockeyStriker : MonoBehaviourPunCallbacks, IPunObservable
         }
         else
         {
-            StrikerCannotMoveOutOfTable();
+            //StrikerCannotMoveOutOfTable();
             //Debug.Log(StrikerRigidbody.velocity);
         }
         if (!PhotonNetwork.IsMasterClient) return;
@@ -94,7 +94,7 @@ public class HockeyStriker : MonoBehaviourPunCallbacks, IPunObservable
     void StrikerCannotMoveOutOfTable()
     {
 
-        RaycastHit hit;
+        RaycastHit hit;        
         if (Physics.Raycast(transform.position, new Vector3(0, 1, 0), out hit, 1000000))
         {
             if (hit.transform.CompareTag("Table"))
@@ -111,6 +111,7 @@ public class HockeyStriker : MonoBehaviourPunCallbacks, IPunObservable
             }
 
         }
+        Debug.Log(hit.transform.tag);
         transform.position = new Vector3(0, transform.position.y, 0);
 
     }

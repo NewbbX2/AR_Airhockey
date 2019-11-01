@@ -6,7 +6,8 @@ public class TrackableEventHandler : DefaultTrackableEventHandler
 {
     private Vu_NetworkController NetCon;
     private Vu_UIController UICon;
-    private bool ShouldConnect = true;
+
+    bool ShouldConnect = true;
 
     private void Awake()
     {
@@ -23,8 +24,7 @@ public class TrackableEventHandler : DefaultTrackableEventHandler
     {        
         if (ShouldConnect)
         {
-            ShouldConnect = false;
-            NetCon.EnterToRoom();
+            ShouldConnect = NetCon.EnterToRoom();
         }       
 
     }

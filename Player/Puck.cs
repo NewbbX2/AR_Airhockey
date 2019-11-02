@@ -18,7 +18,7 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
     public AudioSource Audio_GetScore;
     public AudioSource Audio_StrikerHitPuck;
     public AudioSource Audio_PuckHitConer;
-    public AudioSource AudioPlay;
+    private AudioSource AudioPlay;
 
 
     //볼동작

@@ -56,23 +56,24 @@ public class GyroMove : MonoBehaviour
     private void MoveStriker()
     {
         Vector3 StrikerSpeed = new Vector3(0, 0, 0);
-
+        //기울기x 는 앞뒤 기울기
         if (AnglesVector.x > 30)
-        {
-            StrikerSpeed.x = PM;
-        }
-        else if (AnglesVector.x < 26)
-        {
-            StrikerSpeed.x = -PM;
-        }
-
-        if (AnglesVector.z > 93)
         {
             StrikerSpeed.z = PM;
         }
-        else if (AnglesVector.z < 83)
+        else if (AnglesVector.x < 26)
         {
             StrikerSpeed.z = -PM;
+        }
+
+        //기울기 z는 좌우 기울기
+        if (AnglesVector.z > 93)
+        {
+            StrikerSpeed.ㅌ = PM;
+        }
+        else if (AnglesVector.z < 83)
+        {
+            StrikerSpeed.ㅌ = -PM;
         }
 
         Rb.velocity = StrikerSpeed;

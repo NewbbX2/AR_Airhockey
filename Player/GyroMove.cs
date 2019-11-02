@@ -8,19 +8,8 @@ using UnityEngine.XR.ARSubsystems;
 /// 기본 중립 모양을 바꾸고 싶으면 64번줄 float상수 변경
 public class GyroMove : MonoBehaviour
 {
-    public Camera ARCamera;
-    public Quaternion deviceRotation;
-    public GameObject RetationView;
+    private Quaternion deviceRotation;
     public Vector3 StrikerSpeed;
-
-    //초기 회전각을 저장할 변수
-    private float initialOrientationX;
-    private float initialOrientationY;
-    private float initialOrientationZ;
-
-    private float InitGyroscopeAttitudeX;
-    private float InitGyroscopeAttitudeY;
-    private float InitGyroscopeAttitudeZ;
 
     private Rigidbody Rb;
 
@@ -39,15 +28,6 @@ public class GyroMove : MonoBehaviour
 #endif
 
         //게임 시작시의 초기값 저장
-        initialOrientationX = deviceRotation.x;//Input.gyro.rotationRateUnbiased.x;
-        initialOrientationY = deviceRotation.y;
-        initialOrientationZ = deviceRotation.z;
-
-        InitGyroscopeAttitudeX = Input.gyro.rotationRateUnbiased.x;
-        InitGyroscopeAttitudeY = Input.gyro.rotationRateUnbiased.y;
-        InitGyroscopeAttitudeZ = Input.gyro.rotationRateUnbiased.z;
-
-        //MakeContentAppearAt(Transform content, Vector3 position, Quaternion rotation);
     }
 
     // Update is called once per frame
@@ -59,12 +39,9 @@ public class GyroMove : MonoBehaviour
 #else
         deviceRotation = RetationView.transform.rotation;
 #endif
-        //AlterGyroscopeAttitude();
         AnglToVelo(deviceRotation);
         Rb.velocity = new Vector3(StrikerSpeed.x / 10, 0, StrikerSpeed.z / 10 - 10f);
 
-        //transform.rotation = deviceRotation;
-        //gameObject.transform.Rotate(0, initialOrientationY - Input.gyro.rotationRateUnbiased.y, 0);
     }
 
     private void AnglToVelo(Quaternion dR)
@@ -85,7 +62,6 @@ public class GyroMove : MonoBehaviour
         }
         StrikerSpeed = TranslatedAngles;
 
-        //StrikerSpeed = new Vector3(TranslatedAngles.y-initialOrientationY, TranslatedAngles.x- initialOrientationX, TranslatedAngles.z- initialOrientationZ);
         StrikerSpeed = new Vector3(-(TranslatedAngles.z), TranslatedAngles.y, (TranslatedAngles.x));
     }
 
@@ -107,41 +83,4 @@ public class GyroMove : MonoBehaviour
         return new Quaternion(0.5f, 0.5f, -0.5f, 0.5f) * Input.gyro.attitude * new Quaternion(0, 0, 1, 0);
     }
 
-    private void AlterGyroscopeAttitude()
-    {
-        //if(Input.gyro.rotationRateUnbiased.x> InitGyroscopeAttitudeX)
-        if (Mathf.Abs(deviceRotation.x - initialOrientationX) > 0.1)
-        {
-            if (deviceRotation.x > initialOrientationX)
-            {
-                Rb.AddForce(Vector3.forward * FM);
-            }
-            else
-            {
-                Rb.AddForce(Vector3.back * FM);
-            }
-        }
-        if (Mathf.Abs(deviceRotation.y - initialOrientationY) > 0.1)
-        {
-            if (deviceRotation.y > initialOrientationY)
-            {
-                Rb.AddForce(Vector3.right * FM);
-            }
-            else
-            {
-                Rb.AddForce(Vector3.left * FM);
-            }
-        }
-    }
-
-    private Quaternion DeviceRotationToEditorRotation(Quaternion DeviceRotation)
-    {
-        //핸드폰으로 똑바로 세웠을 때
-        //좌우 기울이기 일치 return new Quaternion(DeviceRotation.y, DeviceRotation.x, DeviceRotation.z, DeviceRotation.w);
-        //축회전은 일치return new Quaternion(DeviceRotation.z, DeviceRotation.y, DeviceRotation.x, DeviceRotation.w);
-        //앞뒤 기울이기 일치return new Quaternion(DeviceRotation.x, DeviceRotation.z, DeviceRotation.y, DeviceRotation.w);
-        //좌우 반전 return new Quaternion(DeviceRotation.y, DeviceRotation.z, DeviceRotation.x, DeviceRotation.w);
-        //앞뒤 기울이기 일치return new Quaternion(DeviceRotation.z, DeviceRotation.x, DeviceRotation.y, DeviceRotation.w);
-        return new Quaternion(DeviceRotation.w, DeviceRotation.z, DeviceRotation.y, DeviceRotation.x);
-    }
 }

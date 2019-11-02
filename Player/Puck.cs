@@ -15,6 +15,10 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
     //볼오브젝트.
     //충돌후 속도감소(1m/s->0.9m/s)
     public float Elasticity = 0.9f;
+    public AudioSource Audio_GetScore;
+    public AudioSource Audio_StrikerHitPuck;
+    public AudioSource Audio_PuckHitConer;
+    private AudioSource AudioPlay;
 
 
     //볼동작
@@ -28,13 +32,17 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
     {
         GameController = FindObjectOfType<ARHockeyGameController>();
         _Rigidbody = GetComponent<Rigidbody>();
+
+        Audio_GetScore = gameObject.AddComponent<AudioSource>();
+        Audio_StrikerHitPuck = gameObject.AddComponent<AudioSource>();
+        Audio_PuckHitConer = gameObject.AddComponent<AudioSource>();
     }
 
 
     //매번 볼동작시킴.
     void Update()
     {
-        
+
         if (!photonView.IsMine && GameController.IsPhotonConnected)
         {
             _Rigidbody.velocity = currentVel;
@@ -66,6 +74,8 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
             HockeyStriker hockeyStrikerInfor = hitObject.GetComponent<HockeyStriker>();
             vec3 = hockeyStrikerInfor.StrikerMoveBall() * 10f; //이정도 값을 해야 좀 속도가 났음
             _Rigidbody.AddForce(vec3);
+            AudioPlay = Audio_StrikerHitPuck;
+            AudioPlay.Play();
         }
     }
 
@@ -76,37 +86,41 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
         if (trigger.tag == "Goal")
         {
             trigger.GetComponent<GoalInf>().InGoal(gameObject);
+            AudioPlay = Audio_GetScore;
+            AudioPlay.Play();
         }
-            /*
-            if (trigger.GetComponent<GoalInf>())
+        /*
+        if (trigger.GetComponent<GoalInf>())
+        {
+            switch (trigger.GetComponent<GoalInf>().TeamNo)
             {
-                switch (trigger.GetComponent<GoalInf>().TeamNo)
-                {
-                    case 0:
-                        GameController.ScoreUp(1);
-                        GameController.SpawnNewPuck(0);
-                        Destroy(gameObject);
-                        break;
+                case 0:
+                    GameController.ScoreUp(1);
+                    GameController.SpawnNewPuck(0);
+                    Destroy(gameObject);
+                    break;
 
-                    case 1:
-                        GameController.ScoreUp(0);
-                        GameController.SpawnNewPuck(1);
-                        Destroy(gameObject);
-                        break;
+                case 1:
+                    GameController.ScoreUp(0);
+                    GameController.SpawnNewPuck(1);
+                    Destroy(gameObject);
+                    break;
 
-                    default:
-                        Debug.Log(trigger.GetComponent<GoalInf>().TeamNo);
-                        return;
-                }
+                default:
+                    Debug.Log(trigger.GetComponent<GoalInf>().TeamNo);
+                    return;
             }
         }
-        */
+    }
+    */
         if (trigger.tag == "Corner")
         {
             //반사각 계산을 위한 코너 벽면의 법선 산출
             Vector3 inNormal_OfTrigger = new Vector3(Mathf.Cos(Mathf.Deg2Rad * trigger.transform.eulerAngles.y), 0, -Mathf.Sin(Mathf.Deg2Rad * trigger.transform.eulerAngles.y));
             _Rigidbody.velocity = Vector3.Reflect(_Rigidbody.velocity, inNormal_OfTrigger);
             //Debug.Log(_Rigidbody.velocity.ToString());
+            AudioPlay = Audio_PuckHitConer;
+            AudioPlay.Play();
         }
     }
 

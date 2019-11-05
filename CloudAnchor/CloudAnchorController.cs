@@ -51,7 +51,9 @@ public class CloudAnchorController : MonoBehaviourPunCallbacks, IPunObservable
     private bool AnchorFinishedHosting = false; // 앵커 호스팅이 끝났는지 확인
     private bool IsQuitting = false; // 앱이 종료되는지 확인
     private Component WorldOriginAnchor = null; // 앵커
+#pragma warning disable CS0414
     private Pose? LastHitPos = null; // AR hit test에서 마지막으로 hit한 곳
+#pragma warning restore
     private ApplicationMode CurrentMode = ApplicationMode.Ready;
 
     #endregion

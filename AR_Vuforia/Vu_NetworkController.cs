@@ -21,10 +21,11 @@ public class Vu_NetworkController : MonoBehaviourPunCallbacks
     {
         //룸 옵션
         RoomOps.MaxPlayers = 2;
-        RoomOps.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "1", false }, { "2", false }};
+        RoomOps.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "1", false }, { "2", false } };
 
         PhotonNetwork.GameVersion = GameVersion;
         PhotonNetwork.AutomaticallySyncScene = true;
+        Input.gyro.enabled = false;
     }
     // Start is called before the first frame update
     void Start()
@@ -35,7 +36,7 @@ public class Vu_NetworkController : MonoBehaviourPunCallbacks
 
         if (!PhotonNetwork.ConnectUsingSettings()) UICon.MessagePrint("Fail to connect to server. Plese check internet");
     }
-    
+
     //포톤 연결시
     public override void OnConnectedToMaster()
     {
@@ -47,7 +48,7 @@ public class Vu_NetworkController : MonoBehaviourPunCallbacks
     //로비 입장시
     public override void OnJoinedLobby()
     {
-        UICon.MessagePrint("Welcome! Capture Image to start!");
+        UICon.MessagePrint("Capture Image to start!");
     }
 
     //방 입장시
@@ -56,7 +57,7 @@ public class Vu_NetworkController : MonoBehaviourPunCallbacks
         UICon.RoomLabelText.text = PhotonNetwork.CurrentRoom.Name;
         UICon.RoomLabelText.GetComponentInParent<Image>().enabled = true;
         UICon.MessagePrint("Entered");
-        
+
         InstantiateTable();
     }
 
@@ -66,6 +67,13 @@ public class Vu_NetworkController : MonoBehaviourPunCallbacks
         UICon.MessagePrint("No room Available. Create New room");
         string roomNum = "Room " + Random.Range(1, 9999);
         PhotonNetwork.CreateRoom(roomNum, RoomOps);
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        PhotonNetwork.LeaveRoom();
+        UICon.RoomLabelText.text = string.Empty;
+        StartCoroutine(QuitRoom());
     }
 
     //룸 입장
@@ -82,5 +90,12 @@ public class Vu_NetworkController : MonoBehaviourPunCallbacks
     {
         Instantiate(TablePrefab, Vector3.zero, Quaternion.identity);
         //PhotonNetwork.Instantiate(TablePrefab.name, Vector3.zero, Quaternion.identity);        
+    }
+    
+    private IEnumerator QuitRoom()
+    {
+        UICon.MessagePrint("Other player left Room. Leave this room");
+        yield return new WaitForSeconds(3.0f);
+        Application.Quit();
     }
 }

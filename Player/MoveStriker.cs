@@ -18,6 +18,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
 {
     #region 공개 변수들
     public float PokeForce = 5.0f;//찌르는 듯한 물리효과의 강도
+    public float Speed = 4.0f; // 움직이는 기본 속도
     //public GameObject MiddlePoint; //경기장 중앙 지점
     //[Range(0, 1)] public int Controller;
     #endregion
@@ -126,7 +127,7 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
         {
             float VecSize = vec.magnitude;
             // 수정된 속력 = (기본속도) + (거리에 따른 속도 보너스)
-            float FizedSize = (3.0f) + ((0.5f) * VecSize);
+            float FizedSize = Speed + ((0.5f) * VecSize);
             StrikerRigidbody.velocity = vec * (FizedSize / VecSize);
         }
         /*

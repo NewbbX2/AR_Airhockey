@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 
-public class SoundManager : MonoBehaviour
+public class SoundManager : MonoBehaviourPunCallbacks
 {
     public AudioClip HitSound;
     public AudioClip WinSound;

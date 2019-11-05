@@ -11,7 +11,7 @@ public class Vu_UIController : MonoBehaviour
     private void Start()
     {
         SnackbarText.text = string.Empty;
-        RoomLabelText.text = string.Empty;
+        RoomLabelText.text = string.Empty;        
     }
 
     private void Update()
@@ -24,7 +24,7 @@ public class Vu_UIController : MonoBehaviour
 
     public void MessagePrint(string message)
     {
-        SnackbarText.text = message;
+        SnackbarText.text = message;        
     }
 
   

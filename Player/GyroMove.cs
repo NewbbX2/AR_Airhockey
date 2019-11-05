@@ -63,17 +63,17 @@ public class GyroMove : MonoBehaviour
         }
         else if (AnglesVector.x < 26)
         {
-            StrikerSpeed.z = -PM;
+            StrikerSpeed.z  = -PM;
         }
 
         //기울기 z는 좌우 기울기
         if (AnglesVector.z > 93)
         {
-            StrikerSpeed.ㅌ = PM;
+            StrikerSpeed.x = PM;
         }
         else if (AnglesVector.z < 83)
         {
-            StrikerSpeed.ㅌ = -PM;
+            StrikerSpeed.x = -PM;
         }
 
         Rb.velocity = StrikerSpeed;

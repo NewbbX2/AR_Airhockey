@@ -10,6 +10,7 @@ public class Vu_NetworkController : MonoBehaviourPunCallbacks
     #region 외부변수
     public string GameVersion = "1.0"; // 게임 버전
     public GameObject TablePrefab; // 게임 테이블 프리팹
+    [System.NonSerialized] public bool Ready = false;
     #endregion
 
     #region 내부변수
@@ -25,7 +26,7 @@ public class Vu_NetworkController : MonoBehaviourPunCallbacks
 
         PhotonNetwork.GameVersion = GameVersion;
         PhotonNetwork.AutomaticallySyncScene = true;
-        Input.gyro.enabled = false;
+        Input.gyro.updateInterval = 0.1f;
     }
     // Start is called before the first frame update
     void Start()
@@ -42,13 +43,14 @@ public class Vu_NetworkController : MonoBehaviourPunCallbacks
     {
         UICon.MessagePrint("Connected to server!");
         PhotonNetwork.JoinLobby();
+        Ready = true;
     }
-
 
     //로비 입장시
     public override void OnJoinedLobby()
     {
         UICon.MessagePrint("Capture Image to start!");
+        
     }
 
     //방 입장시
@@ -88,7 +90,7 @@ public class Vu_NetworkController : MonoBehaviourPunCallbacks
 
     public void InstantiateTable()
     {
-        Instantiate(TablePrefab, Vector3.zero, Quaternion.identity);
+        Instantiate(TablePrefab, new Vector3(0.0f,0.5f,0.0f), Quaternion.identity);
         //PhotonNetwork.Instantiate(TablePrefab.name, Vector3.zero, Quaternion.identity);        
     }
     

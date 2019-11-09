@@ -7,7 +7,7 @@ public class TrackableEventHandler : DefaultTrackableEventHandler
     private Vu_NetworkController NetCon;
     private Vu_UIController UICon;
 
-    bool ShouldConnect = true;
+    private bool ShouldConnect = false;
 
     private void Awake()
     {
@@ -20,11 +20,17 @@ public class TrackableEventHandler : DefaultTrackableEventHandler
         base.Start();        
     }
 
+    protected void Update()
+    {
+        ShouldConnect = NetCon.Ready;
+    }
+
     protected override void OnTrackingFound()
     {        
         if (ShouldConnect)
         {
             ShouldConnect = NetCon.EnterToRoom();
+            NetCon.Ready = false;
         }       
 
     }

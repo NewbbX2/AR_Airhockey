@@ -24,6 +24,8 @@ public class Vu_NetworkController : MonoBehaviourPunCallbacks
         RoomOps.MaxPlayers = 2;
         RoomOps.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "1", false }, { "2", false } };
 
+        PhotonNetwork.SendRate = 60;
+        PhotonNetwork.SerializationRate = 30;
         PhotonNetwork.GameVersion = GameVersion;
         PhotonNetwork.AutomaticallySyncScene = true;
         Input.gyro.updateInterval = 0.1f;

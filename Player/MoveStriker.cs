@@ -68,11 +68,13 @@ public class MoveStriker : MonoBehaviourPunCallbacks, IPunObservable
         {
             if ((transform.position - currentPos).sqrMagnitude >= 10.0f * 10.0f)
             {
-                transform.position = currentPos;
+                //transform.position = currentPos;
+                StrikerRigidbody.MovePosition(currentPos);
             }
             else
             {
-                transform.position = Vector3.Lerp(transform.position, currentPos, Time.deltaTime * 10.0f);
+                //transform.position = Vector3.Lerp(transform.position, currentPos, Time.deltaTime * 10.0f);
+                StrikerRigidbody.MovePosition(Vector3.Lerp(transform.position, currentPos, Time.deltaTime * 10.0f));
             }
             return;
         }

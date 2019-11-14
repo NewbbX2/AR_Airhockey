@@ -40,12 +40,14 @@ public class Puck : MonoBehaviourPunCallbacks, IPunObservable
             _Rigidbody.velocity = currentVel;
             if ((transform.position - currentPos).sqrMagnitude >= 10.0f * 10.0f)
             {
-                transform.position = currentPos;
+                //transform.position = currentPos;
+                _Rigidbody.MovePosition(currentPos);
                 transform.rotation = currentRot;
             }
             else
             {
-                transform.position = Vector3.Lerp(transform.position, currentPos, Time.deltaTime * 10.0f);
+                //transform.position = Vector3.Lerp(transform.position, currentPos, Time.deltaTime * 10.0f);
+                _Rigidbody.MovePosition(Vector3.Lerp(transform.position, currentPos, Time.deltaTime * 10.0f));
                 transform.rotation = Quaternion.Slerp(transform.rotation, currentRot, Time.deltaTime * 10.0f);
             }
         }
